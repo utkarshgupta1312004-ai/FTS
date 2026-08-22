@@ -1,0 +1,102 @@
+{% extends 'userbase.html' %}
+{% load static %}
+
+{% block user %}
+<style>.page-header-box {
+        background: linear-gradient(135deg, #075e27 0%, #09ac4d 100%);
+        border-radius: 14px;
+        padding: 22px 28px;
+        color: #ffffff;
+        margin-bottom: 24px;
+        box-shadow: 0 6px 20px rgba(9, 172, 77, 0.2);
+    }
+    .filecard{
+        border-radius: 15px;
+        border: 1px solid;
+        box-shadow: 0px 2px 4px rgb(18, 125, 29);
+    }
+    .form-group input,select{
+        border-radius:15px;
+    }
+
+    .form-group input:focus{
+        box-shadow:0 0 3px rgb(79, 188, 149);
+        border-color: rgb(79, 188, 149);
+    }
+
+    .form-group select:focus{
+        box-shadow:0 0 3px rgb(79, 188, 149);
+        border-color: rgb(79, 188, 149);
+    }
+
+    .form-group textarea:focus{
+        box-shadow:0 0 3px rgb(79, 188, 149);
+        border-color:    rgb(79, 188, 149);
+    }
+</style>
+ 
+<div class="container">
+
+    <div class="page-header-box d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+            <h3 class="fw-bold text-white mb-1">
+                <i class="ti ti-file-plus me-2"></i>Initiate Files
+            </h3>
+            <p class="mb-0 text-white-50" style="font-size: 14px;">
+                Initiate Files
+            </p>
+        </div>
+        <div>
+            <a href="{% url 'viewfiles' %}" class="btn btn-light text-success fw-bold rounded-pill px-3 py-2 shadow-sm">
+                <i class="ti ti-file-text me-1"></i> View Files
+            </a>
+        </div>
+    </div>
+
+    <div class=" row addfiles">
+
+        <div class="col-sm-10 col-md-8 col-lg-8 filecard p-4 mx-auto">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+                    <h1 ><i class="fa-solid fa-file-arrow-up fa-2x" style="color: white; background-color: rgb(2, 87, 23);padding: 20px;border-radius: 70px; height: 110px; width: 100px;"></i></h1><h1>File Details</h1>
+                </div>   
+            </div>
+            <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="file_name"><strong>File Name / Title:</strong></label>
+            <input type="text" name="title" id="file_name" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="subject"><strong>Subject:</strong></label>
+           <input type="text" name="subject" id="subject" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="employee"><strong>Select Empolyee:</strong></label>
+            <select name="emp_id" id="employee" class="form-control" required>
+                <option value="" selected disabled>Select Employee</option>
+                {% for emp in employee_list %}
+                {% if emp.empemail != empemail %}
+                    <option value="{{emp.empemail}}">
+                    {{emp.empname}} {{emp.empdept}}--{{emp.empemail}}
+                    </option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="choose_files"><strong>Choose Files:</strong></label>
+            <input type="file" name="file_attachment" id="choose_files" class="form-control" required multiple>
+        </div>
+
+        <button type="submit" class="btn btn-success my-3 w-100 rounded-pill btn:hover ">Initiate File</button>
+    </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

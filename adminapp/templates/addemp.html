@@ -1,0 +1,83 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+{% block admin %}
+<h1>Add Employee</h1>
+<style>
+    .add-emp-form {
+        margin-top: 20px;
+    }
+
+    .form-body {
+        background-color: #f8f9fa;
+
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-body:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+        border: 1px solid #28a745;
+    }
+</style>
+
+<hr>
+<div class="add-emp-form container">
+    <div class="alert alert-info" role="alert">
+        Please fill out the form below to add a new employee.
+    </div>
+    <div class="form-block">
+        <div class="card-body col-sm-12 col-md-8 col-lg-10 mx-auto form-hover">
+            <form method="POST" class="form-body form-control p-3 gap-3">
+                <fieldset>
+                    <h1 class="text-center my-3"><i class="fa-solid fa-circle-user fa-canvas-square fa-2x "
+                            style="color: rgb(37, 145, 66);"></i>
+                    </h1>
+                    <h3 class="text-center my-3">Add Employee</h3>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                            <label for="emp_id">Employee ID:</label>
+                            <input type="text" class="form-control" id="emp_id" name="empid" required>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                            <label for="name">Name:</label>
+                            <input type="text" class="form-control" id="name" name="empname" required>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" id="email" name="empemail" required>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                            <label for="contactno">Contact No:</label>
+                            <input type="tel" class="form-control" id="contactno" name="emppassword" required>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                            <label for="description">Description:</label>
+                            <input type="text" class="form-control" id="description" name="empdiscription" required>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                            <label for="department">Department:</label>
+                            <select class="form-control" id="department" name="empdept" required>
+
+                                <option value="" disabled selected>Select Department</option>
+                                {% for dept in depts %}
+                                <option value="{{ dept.deptname }}">{{ dept.deptname }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" onclick="window.alert('Do You want to add this employee ?')"
+                        class="btn btn-success rounded-pill btn-hover-dark w-100 my-4">Add
+                        Employee</button>
+
+                </fieldset>
+            </form>
+        </div>
+
+    </div>
+
+
+</div>
+{% endblock %}

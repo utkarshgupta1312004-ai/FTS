@@ -1,0 +1,798 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+
+{% block admin %}
+<!-- Custom Dashboard Styles -->
+<style>
+  :root {
+    --brand-primary: #09ac4d;
+    --brand-dark: #077333;
+    --brand-light: #e8f7ee;
+    --brand-accent: #22c55e;
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    --card-hover-shadow: 0 20px 30px -10px rgba(9, 172, 77, 0.15), 0 10px 15px -5px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Welcome Banner */
+  .dash-hero {
+    background: linear-gradient(135deg, #075e27 0%, #09ac4d 60%, #16a34a 100%);
+    border-radius: 18px;
+    padding: 30px 35px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(9, 172, 77, 0.25);
+    margin-bottom: 28px;
+  }
+
+  .dash-hero::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .dash-hero .badge-system {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 30px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dash-hero .pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+    animation: pulseGlow 1.8s infinite;
+  }
+
+  @keyframes pulseGlow {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+    }
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 8px rgba(74, 222, 128, 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+    }
+  }
+
+  /* Stat KPI Cards */
+  .stat-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
+    padding: 22px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-hover-shadow);
+    border-color: #bbf7d0;
+  }
+
+  .stat-card .stat-icon-wrapper {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    transition: transform 0.3s ease;
+  }
+
+  .stat-card:hover .stat-icon-wrapper {
+    transform: scale(1.1) rotate(4deg);
+  }
+
+  .icon-green {
+    background: rgba(9, 172, 77, 0.12);
+    color: #09ac4d;
+  }
+
+  .icon-blue {
+    background: rgba(14, 165, 233, 0.12);
+    color: #0ea5e9;
+  }
+
+  .icon-purple {
+    background: rgba(147, 51, 234, 0.12);
+    color: #9333ea;
+  }
+
+  .icon-amber {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+  }
+
+  .stat-number {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+    margin: 8px 0 4px 0;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .stat-footer-link {
+    font-size: 12px;
+    font-weight: 600;
+    color: #09ac4d;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    transition: gap 0.2s ease;
+  }
+
+  .stat-footer-link:hover {
+    color: #077333;
+    gap: 8px;
+  }
+
+  /* Quick Actions Grid */
+  .quick-action-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #f1f5f9;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--card-shadow);
+    transition: all 0.25s ease;
+    height: 100%;
+  }
+
+  .quick-action-card:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+    border-color: #86efac;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px -5px rgba(9, 172, 77, 0.15);
+    color: inherit;
+  }
+
+  .quick-action-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: #e8f7ee;
+    color: #09ac4d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+  }
+
+  .quick-action-card:hover .quick-action-icon {
+    background: #09ac4d;
+    color: #ffffff;
+    transform: rotate(5deg) scale(1.05);
+  }
+
+  .quick-action-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2px;
+  }
+
+  .quick-action-subtitle {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0;
+  }
+
+  /* Section Card Styling */
+  .content-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .content-card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fafbfc;
+  }
+
+  .content-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .content-card-body {
+    padding: 22px;
+  }
+
+  /* Recent Employees Table */
+  .table-custom {
+    margin-bottom: 0;
+  }
+
+  .table-custom thead th {
+    background: #f8fafc;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .table-custom tbody td {
+    padding: 14px 16px;
+    vertical-align: middle;
+    color: #334155;
+    font-size: 13.5px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .emp-avatar-initial {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #09ac4d 0%, #16a34a 100%);
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    box-shadow: 0 2px 6px rgba(9, 172, 77, 0.25);
+  }
+
+  .dept-badge {
+    background: #e8f7ee;
+    color: #09ac4d;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    border: 1px solid #bbf7d0;
+  }
+
+  .status-badge-active {
+    background: #f0fdf4;
+    color: #15803d;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid #bbf7d0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Department List Pill Items */
+  .dept-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+  }
+
+  .dept-list-item:hover {
+    background: #f0fdf4;
+    border-color: #86efac;
+    transform: translateX(3px);
+  }
+
+  /* Empty state */
+  .empty-state-box {
+    text-align: center;
+    padding: 35px 20px;
+    color: #64748b;
+  }
+  .empty-state-box i {
+    font-size: 40px;
+    color: #cbd5e1;
+    margin-bottom: 12px;
+  }
+</style>
+
+<div class="container-fluid px-0">
+
+  <!-- 1. Hero / Welcome Banner -->
+  <div class="dash-hero">
+    <div class="row align-items-center">
+      <div class="col-sm-12 col-md-12 col-lg-8">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <span class="badge-system">
+            <span class="pulse-dot"></span> System Live & Operational
+          </span>
+          <span class="badge-system">
+            <i class="ti ti-calendar"></i> {{ today_str }}
+          </span>
+        </div>
+        <h2 class="fw-bold text-white mb-2">Welcome Back, {{ adminid|default:"Administrator" }}!</h2>
+        <p class="mb-0 text-white-50" style="font-size: 14.5px;">
+          Here is the live status of your <strong>File Tracking System</strong>. Monitor registered employees, organizational departments, and file movement workflows from your central control hub.
+        </p>
+      </div>
+      <div class="col-sm-12 col-lg-4 text-lg-end mt-3 mt-lg-0">
+        <a href="{% url 'addemp' %}" class="btn btn-light text-success fw-bold px-3 py-2 rounded-pill shadow-sm me-2">
+          + Add Employee
+        </a>
+        <a href="{% url 'adddept' %}" class="btn btn-outline-light fw-bold px-3 py-2 rounded-pill">
+          + Add Dept
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. KPI Metric Cards -->
+  <div class="row g-3 mb-4">
+    <!-- Total Departments -->
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="d-flex align-items-start justify-content-between">
+          <div>
+            <div class="stat-label">Total Departments</div>
+            <div class="stat-number">{{ dept_count|default:"0" }}</div>
+            <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 11px;">
+              <i class="ti ti-arrow-up-right"></i> Active Units
+            </span>
+          </div>
+          <div class="stat-icon-wrapper icon-green">
+            <i class="ti ti-building"></i>
+          </div>
+        </div>
+        <div>
+          <a href="{% url 'viewdept' %}" class="stat-footer-link">
+            View All Departments <i class="ti ti-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Employees -->
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="d-flex align-items-start justify-content-between">
+          <div>
+            <div class="stat-label">Total Employees</div>
+            <div class="stat-number">{{ emp_count|default:"0" }}</div>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 11px;">
+              <i class="ti ti-check"></i> Registered Staff
+            </span>
+          </div>
+          <div class="stat-icon-wrapper icon-blue">
+            <i class="ti ti-users"></i>
+          </div>
+        </div>
+        <div>
+          <a href="{% url 'viewemp' %}" class="stat-footer-link text-primary">
+            View All Employees <i class="ti ti-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Login Accounts -->
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="d-flex align-items-start justify-content-between">
+          <div>
+            <div class="stat-label">Login Accounts</div>
+            <div class="stat-number">{{ user_count|default:"0" }}</div>
+            <span class="badge bg-purple-subtle text-purple border border-purple-subtle" style="font-size: 11px; background-color: #f3e8ff; color: #7e22ce;">
+              <i class="ti ti-shield-lock"></i> Secured Credentials
+            </span>
+          </div>
+          <div class="stat-icon-wrapper icon-purple">
+            <i class="ti ti-lock-access"></i>
+          </div>
+        </div>
+        <div>
+          <a href="{% url 'changeadminpwd' %}" class="stat-footer-link" style="color: #9333ea;">
+            Security Settings <i class="ti ti-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Files in System -->
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="d-flex align-items-start justify-content-between">
+          <div>
+            <div class="stat-label">Total Files</div>
+            <div class="stat-number">{{ files_count|default:"0" }}</div>
+            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle" style="font-size: 11px;">
+              <i class="ti ti-files"></i> {{ open_files_count }} Open &bull; {{ closed_files_count }} Closed
+            </span>
+          </div>
+          <div class="stat-icon-wrapper icon-amber">
+            <i class="ti ti-files"></i>
+          </div>
+        </div>
+        <div>
+          <a href="{% url 'adminallfiles' %}" class="stat-footer-link text-warning-emphasis">
+            View All Files <i class="ti ti-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Quick Action Hub -->
+  <div class="mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h5 class="fw-bold mb-0 text-dark"><i class="ti ti-bolt text-success me-2"></i>Quick Management Actions</h5>
+      <small class="text-muted">Direct shortcuts to admin tasks</small>
+    </div>
+    <div class="row g-3">
+      <div class="col-sm-12 col-md-4 col-xl-4">
+        <a href="{% url 'adddept' %}" class="quick-action-card">
+          <div class="quick-action-icon">
+            <i class="ti ti-folder-plus"></i>
+          </div>
+          <div>
+            <div class="quick-action-title">Add Dept</div>
+            <p class="quick-action-subtitle">Create unit</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-sm-12 col-md-4 col-xl-4">
+        <a href="{% url 'viewdept' %}" class="quick-action-card">
+          <div class="quick-action-icon">
+            <i class="ti ti-building"></i>
+          </div>
+          <div>
+            <div class="quick-action-title">View Depts</div>
+            <p class="quick-action-subtitle">Manage list</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-sm-12 col-md-4 col-xl-4">
+        <a href="{% url 'addemp' %}" class="quick-action-card">
+          <div class="quick-action-icon">
+            <i class="ti ti-user-plus"></i>
+          </div>
+          <div>
+            <div class="quick-action-title">Add Staff</div>
+            <p class="quick-action-subtitle">Register new</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-sm-12 col-md-4 col-xl-4">
+        <a href="{% url 'viewemp' %}" class="quick-action-card">
+          <div class="quick-action-icon">
+            <i class="ti ti-users"></i>
+          </div>
+          <div>
+            <div class="quick-action-title">View Staff</div>
+            <p class="quick-action-subtitle">Employee list</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-sm-12 col-md-4 col-xl-4" style="overflow: hidden;">
+        <a href="{% url 'changeadminpwd' %}" class="quick-action-card">
+          <div class="quick-action-icon">
+            <i class="ti ti-key"></i>
+          </div>
+          <div>
+            <div class="quick-action-title">Password</div>
+            <p class="quick-action-subtitle">Security</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-sm-12 col-md-4 col-xl-4">
+        <a href="{% url 'adminlogout' %}" class="quick-action-card">
+          <div class="quick-action-icon" style="background: #fee2e2; color: #ef4444;">
+            <i class="ti ti-power"></i>
+          </div>
+          <div>
+            <div class="quick-action-title text-danger">Logout</div>
+            <p class="quick-action-subtitle">End session</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Recent Activity & Snapshot Tables -->
+  <div class="row g-4 mb-4">
+    <!-- Recently Registered Employees -->
+    <div class="col-lg-8">
+      <div class="content-card h-100">
+        <div class="content-card-header">
+          <h6 class="content-card-title">
+            <i class="ti ti-user-check text-success"></i> Recently Added Employees
+          </h6>
+          <a href="{% url 'viewemp' %}" class="btn btn-sm btn-outline-success rounded-pill px-3">
+            View All
+          </a>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-custom table-hover">
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Join Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for emp in recent_employees %}
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="emp-avatar-initial">{{ emp.empname|slice:":1"|upper }}</span>
+                    <div>
+                      <strong class="text-dark d-block">{{ emp.empname }}</strong>
+                      <small class="text-muted">ID: {{ emp.empid }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="text-secondary">{{ emp.empemail }}</span>
+                </td>
+                <td>
+                  <span class="dept-badge">{{ emp.empdept.deptname }}</span>
+                </td>
+                <td>
+                  <small class="text-muted">{{ emp.joindate }}</small>
+                </td>
+                <td>
+                  <span class="status-badge-active">
+                    <i class="ti ti-circle-filled" style="font-size: 6px;"></i> Active
+                  </span>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5">
+                  <div class="empty-state-box">
+                    <i class="ti ti-users"></i>
+                    <p class="mb-2">No employee records registered yet.</p>
+                    <a href="{% url 'addemp' %}" class="btn btn-sm btn-success rounded-pill">
+                      <i class="ti ti-plus"></i> Add First Employee
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Departments Breakdown & System Health -->
+    <div class="col-lg-4">
+      <!-- Departments Snapshot -->
+      <div class="content-card mb-4">
+        <div class="content-card-header">
+          <h6 class="content-card-title">
+            <i class="ti ti-category text-success"></i> Active Departments
+          </h6>
+          <a href="{% url 'adddept' %}" class="btn btn-sm btn-link text-success p-0 fw-bold">
+            <i class="ti ti-plus"></i> Add
+          </a>
+        </div>
+        <div class="content-card-body p-3">
+          {% for dept in departments|slice:":5" %}
+          <div class="dept-list-item">
+            <div class="d-flex align-items-center gap-2">
+              <i class="ti ti-folder text-success" style="font-size: 18px;"></i>
+              <span class="fw-semibold text-dark">{{ dept.deptname }}</span>
+            </div>
+            <a href="{% url 'viewdept' %}" class="btn btn-sm btn-light py-1 px-2 border" title="View details">
+              <i class="ti ti-chevron-right text-muted"></i>
+            </a>
+          </div>
+          {% empty %}
+          <div class="empty-state-box p-3">
+            <p class="mb-1 text-muted">No departments created.</p>
+            <a href="{% url 'adddept' %}" class="btn btn-sm btn-outline-success rounded-pill">Create Department</a>
+          </div>
+          {% endfor %}
+
+          {% if departments.count > 5 %}
+          <div class="text-center pt-2">
+            <a href="{% url 'viewdept' %}" class="text-success fw-bold text-decoration-none" style="font-size: 12.5px;">
+              + View {{ departments.count|add:"-5" }} more departments
+            </a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- System Security & Session Card -->
+      <div class="content-card">
+        <div class="content-card-header">
+          <h6 class="content-card-title">
+            <i class="ti ti-shield-check text-success"></i> Security & Session
+          </h6>
+        </div>
+        <div class="content-card-body p-3">
+          <div class="d-flex align-items-center justify-content-between p-2 rounded bg-light mb-2">
+            <div class="d-flex align-items-center gap-2">
+              <i class="ti ti-user-shield text-success fs-5"></i>
+              <span class="text-dark fw-semibold" style="font-size: 13px;">Logged Admin</span>
+            </div>
+            <span class="badge bg-success">{{ adminid|default:"Active" }}</span>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between p-2 rounded bg-light mb-3">
+            <div class="d-flex align-items-center gap-2">
+              <i class="ti ti-lock text-primary fs-5"></i>
+              <span class="text-dark fw-semibold" style="font-size: 13px;">Password Security</span>
+            </div>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Protected</span>
+          </div>
+
+          <a href="{% url 'changeadminpwd' %}" class="btn btn-outline-success w-100 rounded-pill btn-sm fw-semibold">
+            <i class="ti ti-key me-1"></i> Update Security Credentials
+          </a>
+        </div>
+      </div>
+    </div>
+  <!-- 5. Recent System Files & Movement Tracker -->
+  <div class="row g-4 mb-4">
+    <div class="col-12">
+      <div class="content-card">
+        <div class="content-card-header">
+          <h6 class="content-card-title">
+            <i class="ti ti-files text-success"></i> Recent System Files & Movement Status
+          </h6>
+          <a href="{% url 'adminallfiles' %}" class="btn btn-sm btn-outline-success rounded-pill px-3">
+            View All Files ({{ files_count|default:"0" }})
+          </a>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-custom table-hover mb-0">
+            <thead>
+              <tr>
+                <th style="width: 60px;">S.No</th>
+                <th style="width: 250px;">File Details</th>
+                <th>Subject</th>
+                <th>Initiated By</th>
+                <th>Current Custodian</th>
+                <th>Status</th>
+                <th>Created Date</th>
+                <th class="text-center" style="width: 120px;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for f in recent_files %}
+              <tr>
+                <td><strong>{{ forloop.counter }}</strong></td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="emp-avatar-initial" style="background: linear-gradient(135deg, #09ac4d 0%, #16a34a 100%);">
+                      <i class="ti ti-file-text"></i>
+                    </span>
+                    <div>
+                      <strong class="text-dark d-block">{{ f.title }}</strong>
+                      <span class="badge bg-light text-dark border font-monospace">{{ f.file_no }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <small class="text-muted d-block" style="max-width: 220px; line-height: 1.4;">
+                    {{ f.subject|default:"-" }}
+                  </small>
+                </td>
+                <td>
+                  <span class="dept-badge">
+                    <i class="ti ti-user me-1"></i>{{ f.initiated_by.empname }}
+                  </span>
+                  <small class="d-block text-muted ps-1">{{ f.initiated_by.empdept.deptname }}</small>
+                </td>
+                <td>
+                  <span class="dept-badge" style="background: #e0f2fe; color: #0284c7; border-color: #bae6fd;">
+                    <i class="ti ti-user-check me-1"></i>{{ f.current_holder.empname }}
+                  </span>
+                  <small class="d-block text-muted ps-1">{{ f.current_holder.empdept.deptname }}</small>
+                </td>
+                <td>
+                  {% if f.status == 'OPEN' %}
+                    <span class="status-badge-active" style="background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd;">
+                      <i class="ti ti-circle-check"></i> Open
+                    </span>
+                  {% elif f.status == 'IN_PROGRESS' %}
+                    <span class="status-badge-active" style="background: #fef3c7; color: #d97706; border: 1px solid #fde68a;">
+                      <i class="ti ti-clock"></i> In Progress
+                    </span>
+                  {% elif f.status == 'CLOSED' %}
+                    <span class="status-badge-active" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;">
+                      <i class="ti ti-check"></i> Closed
+                    </span>
+                  {% else %}
+                    <span class="badge bg-light text-dark border">{{ f.status }}</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <small class="text-dark fw-semibold d-block">{{ f.created_at|date:"M d, Y" }}</small>
+                  <small class="text-muted">{{ f.created_at|date:"h:i A" }}</small>
+                </td>
+                <td class="text-center">
+                  <a href="{% url 'adminfiledetails' fid=f.file_no %}" class="btn btn-sm btn-success rounded-pill px-3 fw-semibold">
+                    <i class="ti ti-eye me-1"></i> Details
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="8">
+                  <div class="empty-state-box">
+                    <i class="ti ti-file-off"></i>
+                    <p class="mb-1 text-muted">No files recorded in the system yet.</p>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

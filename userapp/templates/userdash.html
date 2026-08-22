@@ -1,0 +1,1296 @@
+{% extends 'userbase.html' %}
+{% load static %}
+
+{% block user %}
+<!-- Custom Employee Dashboard Styles -->
+<style>
+  :root {
+    --brand-primary: #09ac4d;
+    --brand-dark: #077333;
+    --brand-light: #e8f7ee;
+    --brand-accent: #22c55e;
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    --card-hover-shadow: 0 20px 30px -10px rgba(9, 172, 77, 0.15), 0 10px 15px -5px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Welcome Banner */
+  .dash-hero {
+    background: linear-gradient(135deg, #075e27 0%, #09ac4d 60%, #16a34a 100%);
+    border-radius: 18px;
+    padding: 30px 35px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(9, 172, 77, 0.25);
+    margin-bottom: 28px;
+  }
+
+  .dash-hero::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .dash-hero .badge-system {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 30px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dash-hero .pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+    animation: pulseGlow 1.8s infinite;
+  }
+
+  @keyframes pulseGlow {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+    }
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 8px rgba(74, 222, 128, 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+    }
+  }
+
+  /* Stat KPI Cards */
+  .stat-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
+    padding: 22px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-hover-shadow);
+    border-color: #bbf7d0;
+  }
+
+  .stat-card .stat-icon-wrapper {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    transition: transform 0.3s ease;
+  }
+
+  .stat-card:hover .stat-icon-wrapper {
+    transform: scale(1.1) rotate(4deg);
+  }
+
+  .icon-green {
+    background: rgba(9, 172, 77, 0.12);
+    color: #09ac4d;
+  }
+
+  .icon-blue {
+    background: rgba(14, 165, 233, 0.12);
+    color: #0ea5e9;
+  }
+
+  .icon-purple {
+    background: rgba(147, 51, 234, 0.12);
+    color: #9333ea;
+  }
+
+  .icon-amber {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+  }
+
+  .stat-number {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+    margin: 8px 0 4px 0;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .stat-footer-link {
+    font-size: 12px;
+    font-weight: 600;
+    color: #09ac4d;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    transition: gap 0.2s ease;
+  }
+
+  .stat-footer-link:hover {
+    color: #077333;
+    gap: 8px;
+  }
+
+  /* Quick Actions Grid */
+  .quick-action-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #f1f5f9;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--card-shadow);
+    transition: all 0.25s ease;
+    height: 100%;
+  }
+
+  .quick-action-card:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+    border-color: #86efac;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px -5px rgba(9, 172, 77, 0.15);
+    color: inherit;
+  }
+
+  .quick-action-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: #e8f7ee;
+    color: #09ac4d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+  }
+
+  .quick-action-card:hover .quick-action-icon {
+    background: #09ac4d;
+    color: #ffffff;
+    transform: rotate(5deg) scale(1.05);
+  }
+
+  .quick-action-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2px;
+  }
+
+  .quick-action-subtitle {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0;
+  }
+
+  /* Section Card Styling */
+  .content-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .content-card-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fafbfc;
+  }
+
+  .content-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .content-card-body {
+    padding: 22px;
+  }
+
+  /* Custom Table */
+  .table-custom {
+    margin-bottom: 0;
+  }
+
+  .table-custom thead th {
+    background: #f8fafc;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .table-custom tbody td {
+    padding: 14px 16px;
+    vertical-align: middle;
+    color: #334155;
+    font-size: 13.5px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .file-avatar-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #09ac4d 0%, #16a34a 100%);
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 2px 6px rgba(9, 172, 77, 0.25);
+    flex-shrink: 0;
+  }
+
+  .file-no-pill {
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    display: inline-block;
+    font-family: monospace;
+  }
+
+  .emp-badge-custom {
+    background: #e8f7ee;
+    color: #09ac4d;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid #bbf7d0;
+  }
+
+  .status-badge-open {
+    background: #e0f2fe;
+    color: #0284c7;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid #bae6fd;
+  }
+
+  .status-badge-progress {
+    background: #fef3c7;
+    color: #d97706;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid #fde68a;
+  }
+
+  .status-badge-closed {
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid #e2e8f0;
+  }
+
+  /* Activity Timeline */
+  .activity-timeline {
+    position: relative;
+    padding-left: 24px;
+  }
+
+  .activity-timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 5px;
+    bottom: 5px;
+    width: 2px;
+    background: #e2e8f0;
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 18px;
+  }
+
+  .timeline-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: -24px;
+    top: 6px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 2px #09ac4d;
+    background: #09ac4d;
+  }
+
+  .timeline-dot.dot-create {
+    background: #09ac4d;
+    box-shadow: 0 0 0 2px #09ac4d;
+  }
+
+  .timeline-dot.dot-forward {
+    background: #0284c7;
+    box-shadow: 0 0 0 2px #0284c7;
+  }
+
+  .timeline-dot.dot-return {
+    background: #f59e0b;
+    box-shadow: 0 0 0 2px #f59e0b;
+  }
+
+  .timeline-dot.dot-close {
+    background: #64748b;
+    box-shadow: 0 0 0 2px #64748b;
+  }
+
+  .timeline-content {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    padding: 12px 16px;
+    transition: all 0.2s ease;
+  }
+
+  .timeline-content:hover {
+    background: #ffffff;
+    border-color: #bbf7d0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Profile Widget Styles */
+  .profile-widget {
+    text-align: center;
+    padding: 24px 20px 20px 20px;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 24px;
+  }
+
+  .profile-avatar-wrap {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 16px auto;
+    border-radius: 50%;
+    padding: 4px;
+    background: linear-gradient(135deg, #09ac4d 0%, #22c55e 100%);
+    box-shadow: 0 8px 20px rgba(9, 172, 77, 0.25);
+  }
+
+  .profile-avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #ffffff;
+  }
+
+  .profile-avatar-fallback {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #09ac4d;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 700;
+  }
+
+  /* Colleague item */
+  .colleague-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .colleague-item:hover {
+    background: #f0fdf4;
+    border-color: #86efac;
+    transform: translateX(3px);
+  }
+
+  .colleague-avatar-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e8f7ee;
+    color: #09ac4d;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+    border: 1px solid #bbf7d0;
+  }
+
+  /* Empty state */
+  .empty-state-box {
+    text-align: center;
+    padding: 35px 20px;
+    color: #64748b;
+  }
+  .empty-state-box i {
+    font-size: 38px;
+    color: #cbd5e1;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  /* Custom Tab styling */
+  .nav-tabs-custom {
+    border-bottom: 2px solid #f1f5f9;
+    gap: 8px;
+  }
+
+  .nav-tabs-custom .nav-link {
+    border: none;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .nav-tabs-custom .nav-link:hover {
+    color: #09ac4d;
+    background: #f8fafc;
+  }
+
+  .nav-tabs-custom .nav-link.active {
+    color: #09ac4d;
+    background: #e8f7ee;
+    border-bottom: 2px solid #09ac4d;
+  }
+</style>
+
+<div class="container-fluid px-0">
+
+  <!-- 1. Hero / Welcome Banner -->
+  <div class="dash-hero">
+    <div class="row align-items-center">
+      <div class="col-sm-12 col-md-12 col-lg-8">
+        <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+          <span class="badge-system">
+            <span class="pulse-dot"></span> Employee Portal Active
+          </span>
+          <span class="badge-system">
+            <i class="ti ti-calendar"></i> {{ today_str }}
+          </span>
+          <span class="badge-system">
+            <i class="ti ti-building"></i> {{ emp.empdept.deptname }}
+          </span>
+        </div>
+        <h2 class="fw-bold text-white mb-2">Welcome Back, {{ emp.empname }}!</h2>
+        <p class="mb-0 text-white-50" style="font-size: 14.5px;">
+          Manage your assigned files, initiate new movement requests, track operational workflows, and collaborate seamlessly with your department.
+        </p>
+      </div>
+      <div class="col-sm-12 col-lg-4 text-lg-end mt-3 mt-lg-0">
+        <a href="{% url 'initiatefile' %}" class="btn btn-light text-success fw-bold px-3 py-2 rounded-pill shadow-sm me-2">
+          <i class="ti ti-file-plus me-1"></i> Initiate File
+        </a>
+        <a href="{% url 'recievedfiles' %}" class="btn btn-outline-light fw-bold px-3 py-2 rounded-pill">
+          <i class="ti ti-inbox me-1"></i> Inbox ({{ pending_count }})
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. KPI Metric Cards -->
+  <div class="row g-3 mb-4">
+    <!-- Received / Inbox Files -->
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="d-flex align-items-start justify-content-between">
+          <div>
+            <div class="stat-label">Received In Inbox</div>
+            <div class="stat-number">{{ received_count|default:"0" }}</div>
+            {% if pending_count > 0 %}
+              <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle" style="font-size: 11px;">
+                <i class="ti ti-bell-ringing"></i> {{ pending_count }} Pending Action
+              </span>
+            {% else %}
+              <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 11px;">
+                <i class="ti ti-check"></i> All Caught Up
+              </span>
+            {% endif %}
+          </div>
+          <div class="stat-icon-wrapper icon-green">
+            <i class="ti ti-inbox"></i>
+          </div>
+        </div>
+        <div>
+          <a href="{% url 'recievedfiles' %}" class="stat-footer-link">
+            Open File Inbox <i class="ti ti-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Initiated Files -->
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="d-flex align-items-start justify-content-between">
+          <div>
+            <div class="stat-label">Initiated Files</div>
+            <div class="stat-number">{{ initiated_count|default:"0" }}</div>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 11px;">
+              <i class="ti ti-file-text"></i> Created by You
+            </span>
+          </div>
+          <div class="stat-icon-wrapper icon-blue">
+            <i class="ti ti-file-plus"></i>
+          </div>
+        </div>
+        <div>
+          <a href="{% url 'viewfiles' %}" class="stat-footer-link text-primary">
+            View Initiated Files <i class="ti ti-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- In Progress Files -->
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="d-flex align-items-start justify-content-between">
+          <div>
+            <div class="stat-label">In Progress</div>
+            <div class="stat-number">{{ in_progress_count|default:"0" }}</div>
+            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle" style="font-size: 11px;">
+              <i class="ti ti-loader"></i> Processing
+            </span>
+          </div>
+          <div class="stat-icon-wrapper icon-amber">
+           <i class="fa-solid fa-bars-progress" style="color: rgb(37, 145, 66);"></i>
+          </div>
+        </div>
+        <div>
+          <a href="{% url 'recievedfiles' %}" class="stat-footer-link text-warning-emphasis">
+            Track Active Files <i class="ti ti-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Closed / Resolved Files -->
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="d-flex align-items-start justify-content-between">
+          <div>
+            <div class="stat-label">Completed Files</div>
+            <div class="stat-number">{{ closed_count|default:"0" }}</div>
+            <span class="badge bg-purple-subtle text-purple border border-purple-subtle" style="font-size: 11px; background-color: #f3e8ff; color: #7e22ce;">
+              <i class="ti ti-circle-check"></i> Successfully Closed
+            </span>
+          </div>
+          <div class="stat-icon-wrapper icon-purple">
+            <i class="ti ti-circle-check"></i>
+          </div>
+        </div>
+        <div>
+          <a href="{% url 'viewfiles' %}" class="stat-footer-link" style="color: #9333ea;">
+            View Archive <i class="ti ti-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Quick Action Hub -->
+  <div class="mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h5 class="fw-bold mb-0 text-dark">
+        <i class="ti ti-bolt text-success me-2"></i>Quick Actions
+      </h5>
+      <small class="text-muted">Shortcuts to daily workflow tools</small>
+    </div>
+    <div class="row g-3">
+      <div class="col-sm-12 col-md-4 col-xl-4">
+        <a href="{% url 'initiatefile' %}" class="quick-action-card">
+          <div class="quick-action-icon">
+            <i class="ti ti-file-plus"></i>
+          </div>
+          <div>
+            <div class="quick-action-title">Initiate File</div>
+            <p class="quick-action-subtitle">Create & forward</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-sm-12 col-md-4 col-xl-4">
+        <a href="{% url 'recievedfiles' %}" class="quick-action-card">
+          <div class="quick-action-icon">
+            <i class="ti ti-inbox"></i>
+          </div>
+          <div>
+            <div class="quick-action-title">Inbox</div>
+            <p class="quick-action-subtitle">Received files</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-sm-12 col-md-4 col-xl-4">
+        <a href="{% url 'viewfiles' %}" class="quick-action-card">
+          <div class="quick-action-icon">
+            <i class="ti ti-files"></i>
+          </div>
+          <div>
+            <div class="quick-action-title">My Files</div>
+            <p class="quick-action-subtitle">Initiated history</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-sm-12 col-md-4 col-xl-4">
+        <a href="{% url 'updateprofile' %}" class="quick-action-card">
+          <div class="quick-action-icon">
+            <i class="ti ti-user"></i>
+          </div>
+          <div>
+            <div class="quick-action-title">Edit Profile</div>
+            <p class="quick-action-subtitle">Update info</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-sm-12 col-md-4 col-xl-4">
+        <a href="{% url 'viewprofile' %}" class="quick-action-card">
+          <div class="quick-action-icon">
+            <i class="ti ti-id"></i>
+          </div>
+          <div>
+            <div class="quick-action-title">Profile Card</div>
+            <p class="quick-action-subtitle">View details</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-sm-12 col-md-4 col-xl-4">
+        <a href="{% url 'changeuserpwd' %}" class="quick-action-card">
+          <div class="quick-action-icon" style="background: #fef3c7; color: #d97706;">
+            <i class="ti ti-lock"></i>
+          </div>
+          <div>
+            <div class="quick-action-title">Security</div>
+            <p class="quick-action-subtitle">Password change</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Visual Analytics & Workflow Distribution -->
+  <div class="row g-4 mb-4">
+    <!-- Status Distribution Chart & Breakdown -->
+    <div class="col-lg-6">
+      <div class="content-card h-100">
+        <div class="content-card-header">
+          <h6 class="content-card-title">
+            <i class="ti ti-chart-pie text-success"></i> File Status Distribution
+          </h6>
+          <span class="badge bg-light text-secondary border">Live Summary</span>
+        </div>
+        <div class="content-card-body">
+          {% if total_files > 0 %}
+            <div id="fileStatusChart" style="min-height: 250px;"></div>
+          {% else %}
+            <div class="empty-state-box">
+              <i class="ti ti-chart-donut"></i>
+              <p class="mb-2 text-muted">No file activity recorded yet to generate charts.</p>
+              <a href="{% url 'initiatefile' %}" class="btn btn-sm btn-success rounded-pill">Initiate a File</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Workflow Health & Overview Metrics -->
+    <div class="col-lg-6">
+      <div class="content-card h-100">
+        <div class="content-card-header">
+          <h6 class="content-card-title">
+            <i class="ti ti-activity text-success"></i> File Tracking Efficiency
+          </h6>
+          <span class="badge bg-success-subtle text-success border border-success-subtle">
+            {{ total_files }} Total Files
+          </span>
+        </div>
+        <div class="content-card-body">
+          <div class="row g-3 mb-3">
+            <div class="col-6">
+              <div class="p-3 rounded-3 bg-light border">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="text-muted small fw-semibold">Open Files</span>
+                  <i class="ti ti-folder text-primary fs-5"></i>
+                </div>
+                <h4 class="fw-bold text-dark mt-2 mb-0">{{ open_count }}</h4>
+                <small class="text-muted">Awaiting processing</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-3 rounded-3 bg-light border">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="text-muted small fw-semibold">In Progress</span>
+                  <i class="ti ti-loader text-warning fs-5"></i>
+                </div>
+                <h4 class="fw-bold text-dark mt-2 mb-0">{{ in_progress_count }}</h4>
+                <small class="text-muted">Being reviewed</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-3 rounded-3 bg-light border">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="text-muted small fw-semibold">Closed Files</span>
+                  <i class="ti ti-circle-check text-success fs-5"></i>
+                </div>
+                <h4 class="fw-bold text-dark mt-2 mb-0">{{ closed_count }}</h4>
+                <small class="text-muted">Completed actions</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-3 rounded-3 bg-light border">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="text-muted small fw-semibold">Total Movements</span>
+                  <i class="ti ti-route text-purple fs-5"></i>
+                </div>
+                <h4 class="fw-bold text-dark mt-2 mb-0">{{ movements_count }}</h4>
+                <small class="text-muted">Dispatches logged</small>
+              </div>
+            </div>
+          </div>
+          
+          <div class="p-2 rounded bg-success-subtle text-success border border-success-subtle text-center small">
+            <i class="ti ti-shield-check me-1"></i> All files in the system are logged with immutable movement history.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Main Content Split: Tables & Activity vs Side Panels -->
+  <div class="row g-4 mb-4">
+    <!-- Left Column: Tables & Movement Timeline (8 cols) -->
+    <div class="col-lg-8">
+      <!-- File Tables with Tabs -->
+      <div class="content-card mb-4">
+        <div class="content-card-header flex-wrap gap-2">
+          <ul class="nav nav-tabs nav-tabs-custom" id="fileTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="received-tab" data-bs-toggle="tab" data-bs-target="#received-tab-pane" type="button" role="tab" aria-controls="received-tab-pane" aria-selected="true">
+                <i class="ti ti-inbox me-1"></i> Inbox (Action Needed)
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="initiated-tab" data-bs-toggle="tab" data-bs-target="#initiated-tab-pane" type="button" role="tab" aria-controls="initiated-tab-pane" aria-selected="false">
+                <i class="ti ti-file-text me-1"></i> My Initiated Files
+              </button>
+            </li>
+          </ul>
+          <div>
+            <a href="{% url 'recievedfiles' %}" class="btn btn-sm btn-outline-success rounded-pill px-3">
+              View All Files
+            </a>
+          </div>
+        </div>
+
+        <div class="tab-content" id="fileTabContent">
+          <!-- Tab 1: Received Files -->
+          <div class="tab-pane fade show active" id="received-tab-pane" role="tabpanel" aria-labelledby="received-tab" tabindex="0">
+            <div class="table-responsive">
+              <table class="table table-custom table-hover">
+                <thead>
+                  <tr>
+                    <th>File Details</th>
+                    <th>Initiated By</th>
+                    <th>Status</th>
+                    <th>Received Date</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for file in recent_received %}
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="file-avatar-icon">
+                          <i class="ti ti-file-text"></i>
+                        </span>
+                        <div>
+                          <strong class="text-dark d-block">{{ file.title }}</strong>
+                          <span class="file-no-pill">{{ file.file_no }}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="emp-badge-custom">
+                        <i class="ti ti-user"></i> {{ file.initiated_by.empname }}
+                      </span>
+                      <small class="d-block text-muted ps-1 mt-1">{{ file.initiated_by.empdept.deptname }}</small>
+                    </td>
+                    <td>
+                      {% if file.status == 'OPEN' %}
+                        <span class="status-badge-open">
+                          <i class="ti ti-circle-check"></i> Open
+                        </span>
+                      {% elif file.status == 'IN_PROGRESS' %}
+                        <span class="status-badge-progress">
+                          <i class="ti ti-clock"></i> In Progress
+                        </span>
+                      {% elif file.status == 'CLOSED' %}
+                        <span class="status-badge-closed">
+                          <i class="ti ti-check"></i> Closed
+                        </span>
+                      {% else %}
+                        <span class="badge bg-light text-dark border">{{ file.status }}</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <small class="text-dark fw-semibold d-block">{{ file.created_at|date:"M d, Y" }}</small>
+                      <small class="text-muted">{{ file.created_at|date:"h:i A" }}</small>
+                    </td>
+                    <td class="text-center">
+                      <a href="{% url 'recievedfiles' %}" class="btn btn-sm btn-outline-success rounded-pill px-3">
+                        <i class="ti ti-eye me-1"></i> Process
+                      </a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="5">
+                      <div class="empty-state-box">
+                        <i class="ti ti-inbox-off"></i>
+                        <p class="mb-1 fw-semibold text-dark">Your inbox is clear!</p>
+                        <p class="text-muted small mb-0">No active files assigned to your desk at this moment.</p>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 2: Initiated Files -->
+          <div class="tab-pane fade" id="initiated-tab-pane" role="tabpanel" aria-labelledby="initiated-tab" tabindex="0">
+            <div class="table-responsive">
+              <table class="table table-custom table-hover">
+                <thead>
+                  <tr>
+                    <th>File Details</th>
+                    <th>Current Holder</th>
+                    <th>Status</th>
+                    <th>Created Date</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for file in recent_initiated %}
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="file-avatar-icon">
+                          <i class="ti ti-file-text"></i>
+                        </span>
+                        <div>
+                          <strong class="text-dark d-block">{{ file.title }}</strong>
+                          <span class="file-no-pill">{{ file.file_no }}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="emp-badge-custom">
+                        <i class="ti ti-user-check"></i> {{ file.current_holder.empname }}
+                      </span>
+                      <small class="d-block text-muted ps-1 mt-1">{{ file.current_holder.empdept.deptname }}</small>
+                    </td>
+                    <td>
+                      {% if file.status == 'OPEN' %}
+                        <span class="status-badge-open">
+                          <i class="ti ti-circle-check"></i> Open
+                        </span>
+                      {% elif file.status == 'IN_PROGRESS' %}
+                        <span class="status-badge-progress">
+                          <i class="ti ti-clock"></i> In Progress
+                        </span>
+                      {% elif file.status == 'CLOSED' %}
+                        <span class="status-badge-closed">
+                          <i class="ti ti-check"></i> Closed
+                        </span>
+                      {% else %}
+                        <span class="badge bg-light text-dark border">{{ file.status }}</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <small class="text-dark fw-semibold d-block">{{ file.created_at|date:"M d, Y" }}</small>
+                      <small class="text-muted">{{ file.created_at|date:"h:i A" }}</small>
+                    </td>
+                    <td class="text-center">
+                      <a href="{% url 'viewfiles' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                        <i class="ti ti-eye me-1"></i> View
+                      </a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="5">
+                      <div class="empty-state-box">
+                        <i class="ti ti-files-off"></i>
+                        <p class="mb-2 fw-semibold text-dark">No files initiated yet.</p>
+                        <a href="{% url 'initiatefile' %}" class="btn btn-sm btn-success rounded-pill">
+                          <i class="ti ti-file-plus me-1"></i> Initiate First File
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live File Movement & Tracking Timeline -->
+      <div class="content-card">
+        <div class="content-card-header">
+          <h6 class="content-card-title">
+            <i class="ti ti-route text-success"></i> Recent File Movements & Tracking Activity
+          </h6>
+          <span class="badge bg-light text-muted border">Latest Dispatches</span>
+        </div>
+        <div class="content-card-body">
+          <div class="activity-timeline">
+            {% for move in recent_movements %}
+            <div class="timeline-item">
+              {% if move.action == 'CREATE' %}
+                <span class="timeline-dot dot-create"></span>
+              {% elif move.action == 'FORWARD' %}
+                <span class="timeline-dot dot-forward"></span>
+              {% elif move.action == 'RETURN' %}
+                <span class="timeline-dot dot-return"></span>
+              {% elif move.action == 'CLOSE' %}
+                <span class="timeline-dot dot-close"></span>
+              {% else %}
+                <span class="timeline-dot"></span>
+              {% endif %}
+              
+              <div class="timeline-content">
+                <div class="d-flex align-items-center justify-content-between mb-1 flex-wrap gap-1">
+                  <div class="d-flex align-items-center gap-2">
+                    <strong class="text-dark">{{ move.file.title }}</strong>
+                    <span class="file-no-pill">{{ move.file.file_no }}</span>
+                    {% if move.action == 'CREATE' %}
+                      <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 10.5px;">Created</span>
+                    {% elif move.action == 'FORWARD' %}
+                      <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 10.5px;">Forwarded</span>
+                    {% elif move.action == 'RETURN' %}
+                      <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle" style="font-size: 10.5px;">Returned</span>
+                    {% elif move.action == 'CLOSE' %}
+                      <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle" style="font-size: 10.5px;">Closed</span>
+                    {% else %}
+                      <span class="badge bg-light text-dark">{{ move.action }}</span>
+                    {% endif %}
+                  </div>
+                  <small class="text-muted"><i class="ti ti-clock me-1"></i>{{ move.moved_at|date:"M d, Y - h:i A" }}</small>
+                </div>
+                
+                <div class="d-flex align-items-center gap-2 text-muted small mb-1 flex-wrap">
+                  <span><strong>From:</strong> {{ move.from_employee.empname|default:"System" }}</span>
+                  <i class="ti ti-arrow-right text-success"></i>
+                  <span><strong>To:</strong> {{ move.to_employee.empname|default:"N/A" }}</span>
+                </div>
+
+                {% if move.remark %}
+                <p class="mb-0 text-secondary small bg-white p-2 rounded border" style="font-style: italic;">
+                  <i class="ti ti-message me-1 text-muted"></i> "{{ move.remark }}"
+                </p>
+                {% endif %}
+              </div>
+            </div>
+            {% empty %}
+            <div class="empty-state-box">
+              <i class="ti ti-history"></i>
+              <p class="mb-0 text-muted">No movement history recorded yet for your files.</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Profile & Department Widgets (4 cols) -->
+    <div class="col-lg-4">
+      <!-- Employee Profile Card -->
+      <div class="profile-widget">
+        <div class="profile-avatar-wrap">
+          {% if emp.pictures %}
+            <img src="{{ emp.pictures.url }}" alt="{{ emp.empname }}" class="profile-avatar-img">
+          {% else %}
+            <div class="profile-avatar-fallback">{{ emp.empname|slice:":1"|upper }}</div>
+          {% endif %}
+        </div>
+        <h5 class="fw-bold text-dark mb-1">{{ emp.empname }}</h5>
+        <span class="badge bg-success-subtle text-success border border-success-subtle mb-3">
+          {{ emp.empdept.deptname }} Department
+        </span>
+
+        <div class="text-start bg-light p-3 rounded-3 border mb-3">
+          <div class="mb-2 pb-2 border-bottom d-flex justify-content-between">
+            <small class="text-muted">Employee ID</small>
+            <small class="fw-bold text-dark">{{ emp.empid }}</small>
+          </div>
+          <div class="mb-2 pb-2 border-bottom d-flex justify-content-between">
+            <small class="text-muted">Email</small>
+            <small class="fw-bold text-dark text-truncate" style="max-width: 170px;">{{ emp.empemail }}</small>
+          </div>
+          <div class="mb-2 pb-2 border-bottom d-flex justify-content-between">
+            <small class="text-muted">Joined On</small>
+            <small class="fw-bold text-dark">{{ emp.joindate }}</small>
+          </div>
+          <div class="d-flex justify-content-between">
+            <small class="text-muted">Role/Bio</small>
+            <small class="fw-semibold text-secondary text-truncate" style="max-width: 170px;">{{ emp.empdiscription|default:"Active Staff" }}</small>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <a href="{% url 'updateprofile' %}" class="btn btn-outline-success btn-sm w-100 rounded-pill fw-semibold">
+            <i class="ti ti-user-edit me-1"></i> Edit Profile
+          </a>
+          <a href="{% url 'viewprofile' %}" class="btn btn-light btn-sm w-100 rounded-pill border fw-semibold">
+            <i class="ti ti-id me-1"></i> Full ID
+          </a>
+        </div>
+      </div>
+
+      <!-- Department Colleagues -->
+      <div class="content-card mb-4">
+        <div class="content-card-header">
+          <h6 class="content-card-title">
+            <i class="ti ti-users text-success"></i> Department Team
+          </h6>
+          <span class="badge bg-light text-muted border">{{ dept_colleagues_count }} Members</span>
+        </div>
+        <div class="content-card-body p-3">
+          {% for colleague in dept_colleagues %}
+          <div class="colleague-item">
+            <div class="d-flex align-items-center gap-2">
+              <span class="colleague-avatar-sm">{{ colleague.empname|slice:":1"|upper }}</span>
+              <div>
+                <strong class="text-dark d-block" style="font-size: 13px;">{{ colleague.empname }}</strong>
+                <small class="text-muted" style="font-size: 11.5px;">{{ colleague.empid }}</small>
+              </div>
+            </div>
+            <a href="{% url 'initiatefile' %}" class="btn btn-sm btn-light py-1 px-2 border" title="Send file to {{ colleague.empname }}">
+              <i class="ti ti-send text-success"></i>
+            </a>
+          </div>
+          {% empty %}
+          <div class="empty-state-box p-3">
+            <p class="mb-0 text-muted small">No other members registered in {{ emp.empdept.deptname }}.</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- System Workflow & Legend Card -->
+      <div class="content-card">
+        <div class="content-card-header">
+          <h6 class="content-card-title">
+            <i class="ti ti-info-circle text-success"></i> Workflow Status Guide
+          </h6>
+        </div>
+        <div class="content-card-body p-3">
+          <div class="d-flex align-items-start gap-2 mb-2 pb-2 border-bottom">
+            <span class="status-badge-open mt-1"><i class="ti ti-circle-check"></i></span>
+            <div>
+              <strong class="text-dark d-block small">Open</strong>
+              <small class="text-muted">File is in recipient's inbox awaiting initial processing or review.</small>
+            </div>
+          </div>
+          <div class="d-flex align-items-start gap-2 mb-2 pb-2 border-bottom">
+            <span class="status-badge-progress mt-1"><i class="ti ti-clock"></i></span>
+            <div>
+              <strong class="text-dark d-block small">In Progress</strong>
+              <small class="text-muted">File has been reviewed and is actively in transit or investigation.</small>
+            </div>
+          </div>
+          <div class="d-flex align-items-start gap-2">
+            <span class="status-badge-closed mt-1"><i class="ti ti-check"></i></span>
+            <div>
+              <strong class="text-dark d-block small">Closed</strong>
+              <small class="text-muted">Action on the file has completed and it has been archived.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function initDashboardCharts() {
+    function renderChart() {
+      const totalFiles = parseInt("{{ total_files|default:0 }}", 10) || 0;
+      const openFiles = parseInt("{{ open_count|default:0 }}", 10) || 0;
+      const progressFiles = parseInt("{{ in_progress_count|default:0 }}", 10) || 0;
+      const closedFiles = parseInt("{{ closed_count|default:0 }}", 10) || 0;
+
+      const chartElement = document.querySelector("#fileStatusChart");
+      if (!chartElement || typeof ApexCharts === "undefined") {
+        return;
+      }
+
+      if (totalFiles > 0 && (openFiles + progressFiles + closedFiles > 0)) {
+        const chartOptions = {
+          series: [openFiles, progressFiles, closedFiles],
+          labels: ['Open Files', 'In Progress', 'Closed Files'],
+          chart: {
+            type: 'donut',
+            height: 250,
+            fontFamily: 'inherit'
+          },
+          colors: ['#0284c7', '#f59e0b', '#09ac4d'],
+          legend: {
+            position: 'bottom',
+            horizontalAlign: 'center',
+            fontSize: '13px',
+            markers: {
+              radius: 12
+            }
+          },
+          dataLabels: {
+            enabled: true,
+            dropShadow: {
+              enabled: false
+            }
+          },
+          plotOptions: {
+            pie: {
+              donut: {
+                size: '68%',
+                labels: {
+                  show: true,
+                  total: {
+                    show: true,
+                    label: 'Total Files',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#64748b',
+                    formatter: function () {
+                      return totalFiles;
+                    }
+                  }
+                }
+              }
+            }
+          },
+          stroke: {
+            width: 2,
+            colors: ['#ffffff']
+          },
+          tooltip: {
+            y: {
+              formatter: function (val) {
+                return val + " File(s)";
+              }
+            }
+          }
+        };
+
+        const chart = new ApexCharts(chartElement, chartOptions);
+        chart.render();
+      }
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", renderChart);
+    } else {
+      renderChart();
+    }
+  })();
+</script>
+{% endblock %}

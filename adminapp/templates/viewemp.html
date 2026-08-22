@@ -1,0 +1,185 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+
+{% block admin %}
+<style>
+    .page-header-box {
+        background: linear-gradient(135deg, #075e27 0%, #09ac4d 100%);
+        border-radius: 14px;
+        padding: 22px 28px;
+        color: #ffffff;
+        margin-bottom: 24px;
+        box-shadow: 0 6px 20px rgba(9, 172, 77, 0.2);
+    }
+
+    .card-custom {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        overflow:hidden;
+    }
+
+    .table-custom thead th {
+        background-color: #09ac4d;
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 14px 16px;
+        border: none;
+    }
+
+    .table-custom tbody td {
+        padding: 14px 16px;
+        color: #334155;
+        font-size: 14px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .emp-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #09ac4d 0%, #16a34a 100%);
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        box-shadow: 0 2px 6px rgba(9, 172, 77, 0.25);
+    }
+
+    .dept-badge {
+        background: #e8f7ee;
+        color: #09ac4d;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: 20px;
+        display: inline-block;
+        border: 1px solid #bbf7d0;
+    }
+
+    .btn-action-delete {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: #ffffff !important;
+        border: none;
+        border-radius: 20px;
+        padding: 6px 14px;
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-action-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.45);
+        color: #ffffff;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #64748b;
+    }
+</style>
+
+<div class="container-fluid px-0">
+    <!-- Header Banner -->
+    <div class="page-header-box d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+            <h3 class="fw-bold text-white mb-1">
+                <i class="ti ti-users me-2"></i>Employee Directory
+            </h3>
+            <p class="mb-0 text-white-50" style="font-size: 14px;">
+                Manage and view all registered employee records and their assigned departments.
+            </p>
+        </div>
+        <div>
+            <a href="{% url 'addemp' %}" class="btn btn-light text-success fw-bold rounded-pill px-3 py-2 shadow-sm">
+                <i class="ti ti-user-plus me-1"></i> Add New Employee
+            </a>
+        </div>
+    </div>
+
+    <!-- Employee Table Card -->
+    <div class="card-custom">
+        <div class="table-responsive">
+            <table class="table table-custom table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">S.No</th>
+                        <th style="width: 200px;">Employee</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Description</th>
+                        <th>Joining Date</th>
+                        <th class="text-center" style="width: 100px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in empinfo %}
+                    <tr>
+                        <td><strong>{{ forloop.counter }}</strong></td>
+                        <td style="width:400px;">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="emp-avatar">{{ d.empname|slice:":1"|upper }}</span>
+                                <div>
+                                    <strong class="text-dark d-block">{{ d.empname }}</strong>
+                                    <small class="text-muted">ID: {{ d.empid }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="text-secondary">{{ d.empemail }}</span>
+                        </td>
+                        <td>
+                            <span class="dept-badge">
+                                <i class="ti ti-building me-1"></i>{{ d.empdept.deptname }}
+                            </span>
+                        </td>
+                        <td>
+                            <small class="text-muted">{{ d.empdiscription|default:"-" }}</small>
+                        </td>
+                        <td>
+                            <small class="text-dark">{{ d.joindate }}</small>
+                        </td>
+                        <td class="text-center">
+                            <form method="POST" action="{% url 'deleteemp' empemail=d.empemail %}" onsubmit="return confirm('Are you sure you want to delete employee {{ d.empname }}?');" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-action-delete">
+                                    <i class="ti ti-trash"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="ti ti-users-minus" style="font-size: 40px; color: #cbd5e1; display: block; margin-bottom: 10px;"></i>
+                                <h6 class="fw-bold text-dark">No Employees Registered</h6>
+                                <p class="text-muted mb-3">There are no employee records in the system yet.</p>
+                                <a href="{% url 'addemp' %}" class="btn btn-sm btn-success rounded-pill px-3">
+                                    <i class="ti ti-user-plus me-1"></i> Add First Employee
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

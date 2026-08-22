@@ -1,0 +1,316 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<!-- [Head] start -->
+
+<head>
+  <title>Empolyee Dashboard</title>
+  <!-- [Meta] -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+  <!-- [Favicon] icon -->
+  <link rel="icon" href="" type="image/x-icon">
+
+  <!-- data tables css -->
+  <link rel="stylesheet" href="{% static 'admin/assets/css/plugins/dataTables.bootstrap5.min.css' %}">
+  <!-- [Google Font] Family -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
+    id="main-font-link">
+  <!-- [Tabler Icons] https://tablericons.com -->
+  <link rel="stylesheet" href="{% static 'admin/assets/fonts/tabler-icons.min.css' %}">
+  <!-- [Feather Icons] https://feathericons.com -->
+  <link rel="stylesheet" href="{% static 'admin/assets/fonts/feather.css' %}">
+  <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
+  <link rel="stylesheet" href="{% static 'admin/assets/fonts/fontawesome.css' %}">
+  <!-- [Material Icons] https://fonts.google.com/icons -->
+  <link rel="stylesheet" href="{% static 'admin/assets/fonts/material.css' %}">
+  <!-- [Template CSS Files] -->
+  <link rel="stylesheet" href="{% static 'admin/assets/css/style.css' %}" id="main-style-link">
+  <link rel="stylesheet" href="{% static 'admin/assets/css/style-preset.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css" integrity="sha512-ApSLB1Pd3/bZN8fWB/RG9YhN/7bd9Hkf3AGaE2mPfebjrxagjuBtx2GcgdqIlJkUzwylBo61r9Xa9NmgBI0swA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    body
+    {
+      font-family: "Poppins", sans-serif;
+    }
+  </style>
+</head>
+<!-- [Head] end -->
+<!-- [Body] Start -->
+
+<body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light">
+  <!-- [ Pre-loader ] start -->
+  <div class="loader-bg">
+    <div class="loader-track">
+      <div class="loader-fill"></div>
+    </div>
+  </div>
+  <!-- [ Pre-loader ] End -->
+  <!-- [ Sidebar Menu ] start -->
+  <nav class="pc-sidebar">
+    <div class="navbar-wrapper" style="background-color:#0d8515e6;">
+      <div class="m-header ">
+        <div class="row">
+             <img class="p-2" style=" border-radius:30px; margin-top:60px; height:60px; width:60px;" src="{% static 'img/logo.jfif' %}" alt="">  
+        </div>
+      </div>
+      <div class="navbar-content">
+        <ul class="pc-navbar ">
+          <li class="pc-item mt-5">
+            <a href="{% url 'userdash' %}" class="pc-link">
+              <span class="pc-micon"><i class="text-white ti text-black ti-dashboard"></i></span>
+              <span class="pc-mtext text-black text-white ">Dashboard</span>
+            </a>
+          </li>
+
+          <li class="pc-item pc-caption">
+            <label class="text-white">Manage</label>
+            <i class="ti ti-dashboard"></i>
+          </li>
+
+          <!-- Categrories -->
+          <li class="pc-item pc-hasmenu">
+            <a href="#!" class="pc-link">
+              <span class="pc-micon text-white"><i class=" text-white ti ti-color-swatch"></i></span>
+              <span class="pc-mtext text-white">Manage Profile</span><span class="text-white pc-arrow"><i
+                  data-feather="chevron-right"></i></span>
+            </a>
+            <ul class="pc-submenu">
+              <li class="pc-item"><a class="pc-link text-white" href="{% url 'updateprofile' %}">Update Profile </a></li>
+              <li class="pc-item"><a class="pc-link text-white" href="{% url 'viewprofile' %}">View Profile</a></li>
+            </ul>
+          </li>
+
+            
+
+          <!-- employees -->
+          <li class="pc-item pc-hasmenu">
+            <a href="#!" class="pc-link">
+              <span class="pc-micon"><i class="text-white ti ti-users"></i></span>
+              <span class="pc-mtext text-white ">Manage Files</span><span class="text-white pc-arrow"><i
+                  data-feather="chevron-right"></i></span>
+            </a>
+            <ul class="pc-submenu">
+              <li class="pc-item"><a class="pc-link text-white" href="{% url 'initiatefile' %}">Initiate Files</a></li>
+            </ul>
+            <ul class="pc-submenu">
+              <li class="pc-item"><a class="pc-link text-white" href="{% url 'viewfiles' %}">View Files</a></li>
+            </ul>
+             <ul class="pc-submenu">
+              <li class="pc-item"><a class="pc-link text-white" href="{% url 'recievedfiles' %}">Received Files</a></li>
+            </ul>
+          </li>
+
+          <li class="text-white pc-item pc-caption">
+            <label>Actions</label>
+            <i class="ti ti-news"></i>
+          </li>
+          <li class="pc-item">
+            <a href="{% url 'changeuserpwd' %}" class="pc-link">
+              <span class="pc-micon text-white "><i class="ti ti-lock"></i></span>
+              <span class="pc-mtext text-white">Change Password</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="{% url 'userlogout' %}" class="pc-link">
+              <span class="pc-micon"> <i class=" text-white ti ti-power"></i></span>
+              <span class="pc-mtext text-white">Logout</span>
+            </a>
+          </li>
+
+        </ul>
+
+      </div>
+    </div>
+  </nav>
+  <!-- [ Sidebar Menu ] end --> <!-- [ Header Topbar ] start -->
+  <header class="pc-header" style="background-color: #0d8515e6;">
+    <div class="header-wrapper"> <!-- [Mobile Media Block] start -->
+      <div class="me-auto pc-mob-drp">
+        <ul class="list-unstyled">
+          <!-- ======= Menu collapse Icon ===== -->
+          <li class="pc-h-item pc-sidebar-collapse">
+            <a href="#" class="pc-head-link ms-0" id="sidebar-hide">
+              <i class="ti ti-menu-2"></i>
+            </a>
+          </li>
+          <li class="pc-h-item pc-sidebar-popup">
+            <a href="#" class="pc-head-link ms-0" id="mobile-collapse">
+              <i class="ti ti-menu-2"></i>
+            </a>
+          </li>
+          <li class="dropdown pc-h-item d-inline-flex d-md-none">
+            <a class="pc-head-link dropdown-toggle arrow-none m-0" data-bs-toggle="dropdown" href="#" role="button"
+              aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
+              <i class="ti ti-search"></i>
+            </a>
+            <div class="dropdown-menu pc-h-dropdown drp-search">
+              <form class="px-3">
+                <div class="form-group mb-0 d-flex align-items-center">
+                  <i data-feather="search"></i>
+                  <input type="search" class="form-control border-0 shadow-none" placeholder="Search here. . .">
+                </div>
+              </form>
+            </div>
+          </li>
+          <li class="pc-h-item d-none d-md-inline-flex">
+            <form class="header-search">
+              <i data-feather="search" class="icon-search"></i>
+              <input type="search" class="form-control" placeholder="Search here. . .">
+            </form>
+          </li>
+        </ul>
+      </div>
+      <!-- [Mobile Media Block end] -->
+      <div class="ms-auto">
+        <ul class="list-unstyled">
+          
+          <li class="dropdown pc-h-item header-user-profile">
+            <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button"
+              aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
+              {% if logged_user and logged_user.pictures %}
+                <img src="{{ logged_user.pictures.url }}" alt="user-image" class="user-avtar">
+              {% else %}
+                <img src="{% static 'admin/assets/images/user/avatar-2.jpg' %}" alt="user-image" class="user-avtar">
+              {% endif %}
+              <span>{{ logged_user.empname|default:request.session.empname|default:"Employee" }}</span>
+            </a>
+            <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
+              <div class="dropdown-header">
+                <div class="d-flex mb-1">
+                  <div class="flex-shrink-0">
+                    {% if logged_user and logged_user.pictures %}
+                      <img src="{{ logged_user.pictures.url }}" alt="user-image" class="user-avtar wid-35">
+                    {% else %}
+                      <img src="{% static 'admin/assets/images/user/avatar-2.jpg' %}" alt="user-image" class="user-avtar wid-35">
+                    {% endif %}
+                  </div>
+                  <div class="flex-grow-1 ms-3">
+                    <h6 class="mb-1">{{ logged_user.empname|default:request.session.empname|default:"Employee" }}</h6>
+                    <span>{{ request.session.empemail }}</span>
+                  </div>
+                  <!-- LOGOUT -->
+                  <a href="{% url 'userlogout' %}" class="pc-head-link bg-transparent" title="Logout"><i class="ti ti-power text-danger"></i></a>
+                </div>
+              </div>
+              
+              <div class="tab-content" id="mysrpTabContent">
+                <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel" aria-labelledby="drp-t1"
+                  tabindex="0">
+                  <a href="{% url 'changeuserpwd' %}" class="dropdown-item">
+                    <i class="ti ti-lock"></i>
+                    <span>Change Password</span>
+                  </a>
+                  
+                  <a href="{% url 'userlogout' %}" class="dropdown-item text-danger">
+                    <i class="ti ti-power"></i>
+                    <span>Logout</span>
+                  </a>
+                </div>
+                
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+  <!-- [ Header ] end -->
+
+
+
+  <!-- [ Main Content ] start -->
+  <div class="pc-container">
+    <div class="pc-content">
+      {% block user %}
+
+      {% endblock %}
+    </div>
+  </div>
+  <!-- [ Main Content ] end -->
+  <footer class="pc-footer">
+    <div class="footer-wrapper container-fluid">
+      <div class="row">
+        <div class="col-sm-11 text-center my-1 ">
+          <h5 class="m-0">Softpro India &#9829; developed by <a href="#"
+              target="_blank">Utkarsh gupta</a>.</h5>
+        </div>
+        <div class="col-auto my-1">
+          <ul class="list-inline footer-link mb-0">
+            <li class="list-inline-item"><a href="{% url 'Index' %}">Home</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- [Page Specific JS] start -->
+  <script src="{% static 'admin/assets/js/plugins/apexcharts.min.js' %}"></script>
+  {% block extra_js %}
+  {% endblock %}
+  <!-- [Page Specific JS] end -->
+  <!-- Required Js -->
+  <script src="{% static 'admin/assets/js/plugins/popper.min.js' %}"></script>
+  <script src="{% static 'admin/assets/js/plugins/simplebar.min.js' %}"></script>
+  <script src="{% static 'admin/assets/js/plugins/bootstrap.min.js' %}"></script>
+  <script src="{% static 'admin/assets/js/fonts/custom-font.js' %}"></script>
+  <script src="{% static 'admin/assets/js/pcoded.js' %}"></script>
+  <script src="{% static 'admin/assets/js/plugins/feather.min.js' %}"></script>
+
+
+
+
+
+  <script>layout_change('light');</script>
+
+
+
+
+  <script>change_box_container('false');</script>
+
+
+
+
+  <script>layout_rtl_change('false');</script>
+
+
+
+
+  <script>preset_change("preset-1");</script>
+
+
+
+
+  <script>font_change("Public-Sans");</script>
+
+  <script src="{% static 'admin/assets/js/plugins/sweetalert2.all.min.js' %}"></script>
+  {% if messages %}
+    {% for message in messages %}
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer);
+              toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+          });
+          Toast.fire({
+            icon: '{{message.tags}}',
+            title: '{{message}}'
+          });
+      </script>
+    {% endfor %}
+  {% endif %}
+</body>
+<!-- [Body] end -->
+
+</html>

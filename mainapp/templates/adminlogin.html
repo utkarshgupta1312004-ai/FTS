@@ -1,0 +1,344 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - File Tracking System</title>
+    <link rel="icon" href="{% static 'img/logo.jfif' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css"
+        integrity="sha512-ApSLB1Pd3/bZN8fWB/RG9YhN/7bd9Hkf3AGaE2mPfebjrxagjuBtx2GcgdqIlJkUzwylBo61r9Xa9NmgBI0swA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, rgba(7, 94, 39, 0.88), rgba(6, 46, 21, 0.92)), url("{% static 'img/back1.avif' %}") center/cover no-repeat fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        .portal-wrapper {
+            width: 100%;
+            max-width: 1060px;
+            margin: auto;
+        }
+
+        .maincard {
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Left Branding Section */
+        .companysec1 {
+            background: linear-gradient(145deg, #075e27 0%, #09ac4d 60%, #15803d 100%);
+            color: #ffffff;
+            padding: 45px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .companysec1::after {
+            content: "";
+            position: absolute;
+            bottom: -60px;
+            right: -60px;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .brand-logo {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            background: #ffffff;
+        }
+
+        .brand-title {
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.2;
+            margin-top: 18px;
+        }
+
+        .brand-description {
+            color: rgba(255, 255, 255, 0.88);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 14px;
+            font-weight: 400;
+        }
+
+        /* Right Portal Section */
+        .official-portal {
+            background-color: #ffffff;
+            padding: 45px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .company-tag {
+            background: #0f172a;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 6px 16px;
+            border-radius: 30px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .portal-heading {
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 16px;
+            margin-bottom: 4px;
+        }
+
+        .portal-subtext {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 22px;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin-bottom: 24px;
+        }
+
+        /* Form Controls */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .input-group-custom {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group-custom label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper .input-icon {
+            position: absolute;
+            left: 14px;
+            font-size: 16px;
+            color: #94a3b8;
+            transition: color 0.2s ease;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            font-size: 14px;
+            color: #0f172a;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .input-wrapper input:focus {
+            background: #ffffff;
+            border-color: #09ac4d;
+            box-shadow: 0 0 0 4px rgba(9, 172, 77, 0.15);
+        }
+
+        .input-wrapper input:focus + .input-icon,
+        .input-wrapper:focus-within .input-icon {
+            color: #09ac4d;
+        }
+
+        .submit-btn {
+            margin-top: 10px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 13px 20px;
+            background: linear-gradient(135deg, #075e27 0%, #09ac4d 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(9, 172, 77, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #064e20 0%, #077333 100%);
+            box-shadow: 0 6px 16px rgba(9, 172, 77, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .back-link {
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 18px;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: #09ac4d;
+        }
+
+        /* Mobile & Tablet Optimizations */
+        @media (max-width: 991.98px) {
+            body {
+                padding: 16px 12px;
+            }
+
+            .companysec1 {
+                padding: 35px 25px;
+                text-align: center;
+                align-items: center;
+            }
+
+            .official-portal {
+                padding: 35px 25px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .brand-logo {
+                width: 58px;
+                height: 58px;
+            }
+
+            .companysec1 {
+                padding: 30px 20px;
+            }
+
+            .official-portal {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="portal-wrapper">
+        <div class="maincard">
+            <div class="row g-0">
+                <!-- Left Section: Branding & System Info -->
+                <div class="col-lg-6 companysec1">
+                    <img src="{% static 'img/logo.jfif' %}" alt="Green Gas Logo" class="brand-logo">
+                    <h1 class="brand-title">Admin Portal</h1>
+                    <p class="brand-description">
+                        Administrative access to manage organizational departments, employee records, file tracking workflows, and security credentials.
+                    </p>
+                </div>
+
+                <!-- Right Section: Login Form -->
+                <div class="col-lg-6 official-portal">
+                    <div>
+                        <span class="company-tag">Green Gas Limited</span>
+                        <h2 class="portal-heading">Welcome Admin</h2>
+                        <p class="portal-subtext">Please enter your login credentials.</p>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    {% if messages %}
+                    {% for m in messages %}
+                    <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-3" role="alert" style="border-radius: 12px;">
+                        <i class="fa-solid fa-circle-exclamation me-2"></i> {{ m }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <form class="login-form" method="post" action="{% url 'adminlogin' %}">
+                        {% csrf_token %}
+                        <div class="input-group-custom">
+                            <label for="username">Email Address</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-envelope input-icon"></i>
+                                <input type="email" id="username" name="username" placeholder="name@greengas.com" required autofocus />
+                            </div>
+                        </div>
+
+                        <div class="input-group-custom">
+                            <label for="password">Password</label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-lock input-icon"></i>
+                                <input type="password" id="password" name="password" placeholder="••••••••" required />
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <span>Sign In</span>
+                            <i class="fa-solid fa-arrow-right-to-bracket ms-1"></i>
+                        </button>
+                    </form>
+
+                    <div class="text-center">
+                        <a href="{% url 'Index' %}" class="back-link">
+                            <i class="fa-solid fa-arrow-left"></i> Back to Main Portal
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+</body>
+
+</html>

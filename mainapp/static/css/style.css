@@ -1,0 +1,157 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+body {
+    background: url(../img/back1.avif) no-repeat;
+    background-size: cover;
+    height: 100%;
+    font-family: "Poppins", sans-serif;
+}
+
+.container-fluid {
+    content: '';
+    justify-content: center;
+
+}
+
+.maincard {
+    background-color: rgba(23, 105, 45, 0.932);
+    color: white;
+    border-radius: 30px;
+}
+
+.maincard:hover {
+    border: 1px solid;
+    box-shadow: (0px 8px 20px black);
+    transform: translateY(-3px);
+}
+.maincard .maincard:focus{
+      box-shadow: 0 0 0 4px rgba(21, 128, 61, 0.12);
+
+}
+.official-portal{
+    background-color: white;
+    border-radius: 0px 20px 20px 0px;
+    color: black;
+}
+.logintypecard {
+    border-radius: 15px;
+   
+}
+
+
+.logintypecard:hover{
+  border: 1px solid;
+  transform: translateY(-5px);
+  background:rgba(17, 118, 13, 0.256)
+  
+}
+.adminform input{
+    border-bottom: 1px solid;
+}
+
+/* Form Styles */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper .icon {
+  position: absolute;
+  left: 14px;
+  width: 18px;
+  height: 18px;
+  color: #9ca3af;
+  pointer-events: none;
+  transition: color 0.2s;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  font-size: 0.92rem;
+  color: #111827;
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input-wrapper input::placeholder {
+  color: #9ca3af;
+}
+
+.input-wrapper input:focus {
+  background: #ffffff;
+  border-color: #15803d;
+  box-shadow: 0 0 0 4px rgba(21, 128, 61, 0.12);
+}
+
+.input-wrapper input:focus + .icon,
+.input-wrapper:focus-within .icon {
+  color: #15803d;
+}
+
+/* Submit Button */
+.submit-btn {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 20px;
+  background: linear-gradient(135deg, #15803d, #166534);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(21, 128, 61, 0.25);
+  transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #166534, #14532d);
+  box-shadow: 0 6px 16px rgba(21, 128, 61, 0.35);
+  transform: translateY(-1px);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.btn-icon {
+  width: 18px;
+  height: 18px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.companysec1{
+    background: #15803d;
+    border-radius: 20px 0px 0px 20px;
+    display: block;
+
+}

@@ -1,0 +1,99 @@
+{% extends 'userbase.html' %}
+{% load static %}
+
+{% block user %}
+<!-- Page Title -->
+<div class="container-fluid container-padding-left">
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+        <h4 class="fw-bold mb-0">👤 View Profile</h4>
+    </div>
+</div>
+
+<!-- Profile Card -->
+<div class="container-fluid container-padding-left mb-4">
+    <div class="card rounded-3 shadow-lg border-0">
+        <div class="card-body p-5">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center">
+                    <div class="avatar-upload position-relative d-inline-block mb-3">
+                        <div class="avatar-preview">
+                            {% if user.pictures %}
+                                <div id="imagePreview" style="background-image: url('{{ user.pictures.url }}');"></div>
+                            {% else %}
+                                <div id="imagePreview" style="background-image: url(/media/default.webp);"></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <h2 class="fw-bold text-primary">{{ user.empname }}</h2>
+                    <p class="fs-6 text-muted mb-4">ID: {{ user.empid }} | Department: {{ user.empdept.deptname }}</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <span class="text-muted d-block">🆔 Employee ID</span>
+                            <span class="fw-semibold">{{ user.empid }}</span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <span class="text-muted d-block">👤 Employee Name</span>
+                            <span class="fw-semibold">{{ user.empname }}</span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <span class="text-muted d-block">📧 Email Address</span>
+                            <span class="fw-semibold">{{ user.empemail }}</span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <span class="text-muted d-block">🏢 Department</span>
+                            <span class="fw-semibold">{{ user.empdept.deptname }}</span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <span class="text-muted d-block">📝 Description</span>
+                            <span class="fw-semibold">{{ user.empdiscription }}</span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <span class="text-muted d-block">📅 Date of Joining</span>
+                            <span class="fw-semibold">{{ user.joindate }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Profile Card Styles */
+    .card {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border: none;
+    }
+
+    .card-body {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    }
+
+    /* Avatar Styles */
+    .avatar-upload {
+        position: relative;
+        max-width: 200px;
+        max-height: 200px;
+    }
+
+    .avatar-preview {
+        width: 180px;
+        height: 180px;
+        position: relative;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid #0d6efd;
+    }
+    
+    .avatar-preview>div {
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+</style>
+{% endblock %}

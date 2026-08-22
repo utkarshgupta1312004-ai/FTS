@@ -1,0 +1,180 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+
+{% block admin %}
+<style>
+    .page-header-box {
+        background: linear-gradient(135deg, #075e27 0%, #09ac4d 100%);
+        border-radius: 14px;
+        padding: 22px 28px;
+        color: #ffffff;
+        margin-bottom: 24px;
+        box-shadow: 0 6px 20px rgba(9, 172, 77, 0.2);
+    }
+
+    .card-custom {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    .table-custom thead th {
+        background-color: #09ac4d;
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 14px 16px;
+        border: none;
+    }
+
+    .table-custom tbody td {
+        padding: 14px 16px;
+        color: #334155;
+        font-size: 14px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .dept-icon-wrapper {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: #e8f7ee;
+        color: #09ac4d;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        box-shadow: 0 2px 6px rgba(9, 172, 77, 0.15);
+    }
+
+    .staff-count-badge {
+        background: #f0fdf4;
+        color: #15803d;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        border: 1px solid #bbf7d0;
+    }
+
+    .btn-action-delete {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: #ffffff !important;
+        border: none;
+        border-radius: 20px;
+        padding: 6px 14px;
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-action-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.45);
+        color: #ffffff;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #64748b;
+    }
+</style>
+
+<div class="container-fluid px-0">
+    <!-- Header Banner -->
+    <div class="page-header-box d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+            <h3 class="fw-bold text-white mb-1">
+                <i class="ti ti-building me-2"></i>Department Directory
+            </h3>
+            <p class="mb-0 text-white-50" style="font-size: 14px;">
+                Manage organizational departments and view assigned employee allocations.
+            </p>
+        </div>
+        <div>
+            <a href="{% url 'adddept' %}" class="btn btn-light text-success fw-bold rounded-pill px-3 py-2 shadow-sm">
+                <i class="ti ti-folder-plus me-1"></i> Add New Department
+            </a>
+        </div>
+    </div>
+
+    <!-- Departments Table Card -->
+    <div class="card-custom">
+        <div class="table-responsive">
+            <table class="table table-custom table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 70px;">S.No</th>
+                        <th>Dept ID</th>
+                        <th>Department Name</th>
+                        <th>Assigned Staff</th>
+                        <th class="text-center" style="width: 120px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dept in depts %}
+                    <tr>
+                        <td><strong>{{ forloop.counter }}</strong></td>
+                        <td>
+                            <span class="badge bg-light text-dark border">#{{ dept.deptid }}</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="dept-icon-wrapper">
+                                    <i class="ti ti-folder"></i>
+                                </div>
+                                <div>
+                                    <strong class="text-dark d-block fs-6">{{ dept.deptname }}</strong>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="staff-count-badge">
+                                <i class="ti ti-users"></i>
+                                {{ dept.emp_count|default:"0" }} Member{{ dept.emp_count|pluralize }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <form method="POST" action="{% url 'deletedept' dept_id=dept.deptid %}" onsubmit="return confirm('Are you sure you want to delete department {{ dept.deptname }}? All associated employee records may be removed.');" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-action-delete">
+                                    <i class="ti ti-trash"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="ti ti-folder-off" style="font-size: 40px; color: #cbd5e1; display: block; margin-bottom: 10px;"></i>
+                                <h6 class="fw-bold text-dark">No Departments Created</h6>
+                                <p class="text-muted mb-3">Get started by creating your first organizational unit.</p>
+                                <a href="{% url 'adddept' %}" class="btn btn-sm btn-success rounded-pill px-3">
+                                    <i class="ti ti-folder-plus me-1"></i> Add Department
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
