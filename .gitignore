@@ -21,6 +21,7 @@ media/
 
 # Static files
 staticfiles/
+staticfiles_build/
 
 # IDE
 .vscode/
