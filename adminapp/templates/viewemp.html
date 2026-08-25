@@ -17,7 +17,7 @@
         border-radius: 16px;
         border: 1px solid #f1f5f9;
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-        overflow:hidden;
+        overflow: hidden;
     }
 
     .table-custom thead th {
@@ -64,6 +64,29 @@
         border: 1px solid #bbf7d0;
     }
 
+    .btn-action-edit {
+        background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+        color: #ffffff !important;
+        border: none;
+        border-radius: 20px;
+        padding: 6px 14px;
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(14, 165, 233, 0.3);
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-action-edit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.45);
+        color: #ffffff;
+    }
+
     .btn-action-delete {
         background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
         color: #ffffff !important;
@@ -91,6 +114,11 @@
         text-align: center;
         padding: 40px 20px;
         color: #64748b;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #09ac4d;
+        box-shadow: 0 0 0 0.25rem rgba(9, 172, 77, 0.2);
     }
 </style>
 
@@ -124,6 +152,7 @@
                         <th>Department</th>
                         <th>Description</th>
                         <th>Joining Date</th>
+                        <th class="text-center" style="width: 100px;">Edit</th>
                         <th class="text-center" style="width: 100px;">Action</th>
                     </tr>
                 </thead>
@@ -131,7 +160,7 @@
                     {% for d in empinfo %}
                     <tr>
                         <td><strong>{{ forloop.counter }}</strong></td>
-                        <td style="width:400px;">
+                        <td style="width:250px;">
                             <div class="d-flex align-items-center gap-2">
                                 <span class="emp-avatar">{{ d.empname|slice:":1"|upper }}</span>
                                 <div>
@@ -155,6 +184,20 @@
                             <small class="text-dark">{{ d.joindate }}</small>
                         </td>
                         <td class="text-center">
+                            <button type="button" 
+                                    class="btn-action-edit"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editEmpModal" 
+                                    data-empid="{{ d.empid }}"
+                                    data-empname="{{ d.empname }}"
+                                    data-empemail="{{ d.empemail }}"
+                                    data-empdeptid="{{ d.empdept.deptid }}"
+                                    data-empdeptname="{{ d.empdept.deptname }}"
+                                    data-empdiscription="{{ d.empdiscription }}">
+                                <i class="ti ti-pencil"></i> Edit
+                            </button>
+                        </td>
+                        <td class="text-center">
                             <form method="POST" action="{% url 'deleteemp' empemail=d.empemail %}" onsubmit="return confirm('Are you sure you want to delete employee {{ d.empname }}?');" style="display: inline;">
                                 {% csrf_token %}
                                 <button type="submit" class="btn-action-delete">
@@ -165,7 +208,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="7">
+                        <td colspan="8">
                             <div class="empty-state">
                                 <i class="ti ti-users-minus" style="font-size: 40px; color: #cbd5e1; display: block; margin-bottom: 10px;"></i>
                                 <h6 class="fw-bold text-dark">No Employees Registered</h6>
@@ -182,4 +225,136 @@
         </div>
     </div>
 </div>
+
+<!-- Edit Employee Modal (Bootstrap 5.3) -->
+<div class="modal fade" id="editEmpModal" tabindex="-1" aria-labelledby="editEmpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-2 overflow-hidden">
+            <div class="modal-header text-white p-3 px-4" style="background: linear-gradient(135deg, #075e27 0%, #09ac4d 100%);">
+                <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="editEmpModalLabel">
+                    <i class="ti ti-pencil fs-4"></i> Edit Employee Details
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editEmpForm" method="POST">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <!-- Hidden field for original email -->
+                    <input type="hidden" name="old_empemail" id="modal_old_empemail">
+
+                    <div class="row g-3">
+                        <!-- Employee ID -->
+                        <div class="col-md-6">
+                            <label for="modal_empid" class="form-label fw-bold text-dark">Employee ID <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="ti ti-id text-muted"></i></span>
+                                <input type="text" class="form-control border-start-0 ps-0" id="modal_empid" name="empid" placeholder="e.g. EMP001" required>
+                            </div>
+                        </div>
+
+                        <!-- Employee Name -->
+                        <div class="col-md-6">
+                            <label for="modal_empname" class="form-label fw-bold text-dark">Full Name <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="ti ti-user text-success"></i></span>
+                                <input type="text" class="form-control border-start-0 ps-0" id="modal_empname" name="empname" placeholder="Enter full name" required>
+                            </div>
+                        </div>
+
+                        <!-- Employee Email -->
+                        <div class="col-md-6">
+                            <label for="modal_empemail" class="form-label fw-bold text-dark">Email Address <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="ti ti-mail text-muted"></i></span>
+                                <input type="email" class="form-control border-start-0 ps-0" id="modal_empemail" name="empemail" placeholder="name@example.com" required>
+                            </div>
+                        </div>
+
+                        <!-- Department Dropdown -->
+                        <div class="col-md-6">
+                            <label for="modal_empdept" class="form-label fw-bold text-dark">Department <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="ti ti-building text-success"></i></span>
+                                <select class="form-select border-start-0 ps-0" id="modal_empdept" name="empdept" required>
+                                    <option value="" disabled selected>Select Department</option>
+                                    {% for dept in depts %}
+                                        <option value="{{ dept.deptid }}">{{ dept.deptname }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-md-12">
+                            <label for="modal_empdiscription" class="form-label fw-bold text-dark">Description / Role Notes</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="ti ti-file-text text-muted"></i></span>
+                                <textarea class="form-control border-start-0 ps-0" id="modal_empdiscription" name="empdiscription" rows="2" placeholder="Brief job description or notes"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-top-0 p-3 px-4">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                        <i class="ti ti-x me-1"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-success text-white rounded-pill px-4 shadow-sm" style="background: linear-gradient(135deg, #075e27 0%, #09ac4d 100%); border: none;">
+                        <i class="ti ti-check me-1"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const editEmpModal = document.getElementById('editEmpModal');
+    if (editEmpModal) {
+        editEmpModal.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            const button = event.relatedTarget;
+
+            // Extract employee data from data attributes
+            const empId = button.getAttribute('data-empid') || '';
+            const empName = button.getAttribute('data-empname') || '';
+            const empEmail = button.getAttribute('data-empemail') || '';
+            const empDeptId = button.getAttribute('data-empdeptid') || '';
+            const empDeptName = button.getAttribute('data-empdeptname') || '';
+            const empDiscription = button.getAttribute('data-empdiscription') || '';
+
+            // Update modal input fields
+            const modalOldEmpEmail = editEmpModal.querySelector('#modal_old_empemail');
+            const modalEmpId = editEmpModal.querySelector('#modal_empid');
+            const modalEmpName = editEmpModal.querySelector('#modal_empname');
+            const modalEmpEmail = editEmpModal.querySelector('#modal_empemail');
+            const modalEmpDept = editEmpModal.querySelector('#modal_empdept');
+            const modalEmpDiscription = editEmpModal.querySelector('#modal_empdiscription');
+
+            if (modalOldEmpEmail) modalOldEmpEmail.value = empEmail;
+            if (modalEmpId) modalEmpId.value = empId;
+            if (modalEmpName) modalEmpName.value = empName;
+            if (modalEmpEmail) modalEmpEmail.value = empEmail;
+            if (modalEmpDiscription) modalEmpDiscription.value = empDiscription;
+
+            // Pre-select department option in dropdown
+            if (modalEmpDept) {
+                if (empDeptId) {
+                    modalEmpDept.value = empDeptId;
+                }
+                if (!modalEmpDept.value && empDeptName) {
+                    for (let i = 0; i < modalEmpDept.options.length; i++) {
+                        if (modalEmpDept.options[i].text.trim() === empDeptName.trim() || modalEmpDept.options[i].value === empDeptName) {
+                            modalEmpDept.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

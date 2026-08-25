@@ -2,7 +2,7 @@ from userapp.models import Files, FileMovement
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views.decorators.cache import cache_control
-from django.db.models import Count
+from django.db.models import Count, Q
 from adminapp.models import Department, Employee
 from mainapp.models import LoginInfo
 import datetime
@@ -158,16 +158,55 @@ def AddEmp(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def ViewEmp(request):
     try:
-        adminid=request.session.get('adminid')
+        adminid = request.session.get('adminid')
         if not adminid:
-            messages.error(request,'Please Login First')
+            messages.error(request, 'Please Login First')
             return redirect('adminlogin')
         
-        empinfo=Employee.objects.select_related('empdept').all()
-        
-        return render(request,'viewemp.html',{'empinfo':empinfo})
+        if request.method == "POST":
+            old_empemail = request.POST.get('old_empemail')
+            empid = request.POST.get('empid')
+            empname = request.POST.get('empname')
+            empemail = request.POST.get('empemail')
+            empdept_val = request.POST.get('empdept')
+            empdiscription = request.POST.get('empdiscription')
+
+            
+            if Employee.objects.exclude(empemail=old_empemail).filter(Q(empid=empid) | Q(empemail=empemail)).exists():
+                messages.error(request, 'User already exists')
+                return redirect('viewemp')
+            else:
+                try:
+                    dept = Department.objects.get(deptid=empdept_val) if str(empdept_val).isdigit() else Department.objects.get(deptname=empdept_val)
+                    
+                    if old_empemail != empemail:
+                        LoginInfo.objects.filter(email=old_empemail).update(email=empemail)
+                        Employee.objects.filter(empemail=old_empemail).update(
+                            empid=empid,
+                            empname=empname,
+                            empemail=empemail,
+                            empdept=dept,
+                            empdiscription=empdiscription
+                        )
+                    else:
+                        emp = Employee.objects.get(empemail=old_empemail)
+                        emp.empid = empid
+                        emp.empname = empname
+                        emp.empdept = dept
+                        emp.empdiscription = empdiscription
+                        emp.save()
+
+                    messages.success(request, 'Employee updated successfully!')
+                except (Employee.DoesNotExist, Department.DoesNotExist):
+                    messages.error(request, 'Employee or Department record not found.')
+
+                return redirect('viewemp')
+
+        empinfo = Employee.objects.select_related('empdept').all()
+        depts = Department.objects.all()
+        return render(request, 'viewemp.html', {'empinfo': empinfo, 'depts': depts})
     except KeyError:
-        messages.error(request,'Please Login First')
+        messages.error(request, 'Please Login First')
         return redirect('adminlogin')
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
