@@ -95,7 +95,7 @@
     }
 
     .btn-action-edit {
-        background: linear-gradient(135deg, #d5f02b 0%, #7edc26 100%);
+        background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
         color: #ffffff !important;
         border: none;
         border-radius: 20px;
@@ -107,14 +107,19 @@
         align-items: center;
         gap: 6px;
         cursor: pointer;
-        box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+        box-shadow: 0 2px 6px rgba(14, 165, 233, 0.3);
         transition: all 0.2s ease-in-out;
     }
 
     .btn-action-edit:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(72, 247, 142, 0.45);
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.45);
         color: #ffffff;
+    }
+
+    .form-control:focus {
+        border-color: #09ac4d;
+        box-shadow: 0 0 0 0.25rem rgba(9, 172, 77, 0.2);
     }
 </style>
 
@@ -174,12 +179,14 @@
                             </span>
                         </td>
                         <td class="text-center">
-                            <form method="POST" action="#" style="display: inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn-action-edit">
-                                    <i class="ti ti-trash"></i> Edit
-                                </button>
-                            </form>
+                            <button type="button" 
+                                    class="btn-action-edit"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editDeptModal" 
+                                    data-deptid="{{ dept.deptid }}" 
+                                    data-deptname="{{ dept.deptname }}">
+                                <i class="ti ti-pencil"></i> Edit
+                            </button>
                         </td>
                         <td class="text-center">
                             <form method="POST" action="{% url 'deletedept' dept_id=dept.deptid %}"
@@ -194,7 +201,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5">
+                        <td colspan="6">
                             <div class="empty-state">
                                 <i class="ti ti-folder-off"
                                     style="font-size: 40px; color: #cbd5e1; display: block; margin-bottom: 10px;"></i>
@@ -212,4 +219,88 @@
         </div>
     </div>
 </div>
+
+<!-- Edit Department Modal -->
+<div class="modal fade" id="editDeptModal" tabindex="-1" aria-labelledby="editDeptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-2 overflow-hidden">
+            <div class="modal-header text-white p-3 px-4" style="background: linear-gradient(135deg, #075e27 0%, #09ac4d 100%);">
+                <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="editDeptModalLabel">
+                    <i class="ti ti-pencil fs-4"></i> Edit Department
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editDeptForm" method="POST">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <!-- Hidden field for Department ID -->
+                    <input type="hidden" name="deptid" id="modal_deptid">
+
+                    <!-- Department ID display -->
+                    <div class="mb-3">
+                        <label class="form-label text-secondary text-uppercase small fw-bold">Department ID</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="ti ti-hash text-muted"></i></span>
+                            <input type="text" class="form-control bg-light border-start-0 text-dark fw-bold" id="modal_deptid_display" name="deptid" readonly disabled>
+                        </div>
+                    </div>
+
+                    <!-- Department Name input -->
+                    <div class="mb-3">
+                        <label for="modal_deptname" class="form-label fw-bold text-dark">
+                            Department Name <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="ti ti-folder text-success"></i>
+                            </span>
+                            <input type="text" 
+                                   class="form-control border-start-0 ps-0" 
+                                   id="modal_deptname" 
+                                   name="deptname" 
+                                   placeholder="Enter department name" 
+                                   required 
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-top-0 p-3 px-4">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                        <i class="ti ti-x me-1"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-success text-white rounded-pill px-4 shadow-sm" style="background: linear-gradient(135deg, #075e27 0%, #09ac4d 100%); border: none;">
+                        <i class="ti ti-check me-1"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const editDeptModal = document.getElementById('editDeptModal');
+    if (editDeptModal) {
+        editDeptModal.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            const button = event.relatedTarget;
+
+            // Extract department info from data attributes
+            const deptId = button.getAttribute('data-deptid');
+            const deptName = button.getAttribute('data-deptname');
+
+            // Update modal input fields
+            const modalDeptId = editDeptModal.querySelector('#modal_deptid');
+            const modalDeptIdDisplay = editDeptModal.querySelector('#modal_deptid_display');
+            const modalDeptName = editDeptModal.querySelector('#modal_deptname');
+
+            if (modalDeptId) modalDeptId.value = deptId;
+            if (modalDeptIdDisplay) modalDeptIdDisplay.value = '#' + deptId;
+            if (modalDeptName) modalDeptName.value = deptName;
+        });
+    }
+});
+</script>
 {% endblock %}

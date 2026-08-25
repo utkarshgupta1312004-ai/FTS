@@ -80,6 +80,14 @@ def ViewDept(request):
             messages.error(request,'Please Login First')
             return redirect('adminlogin')
         depts = Department.objects.annotate(emp_count=Count('employee')).all()
+
+
+        if request.method=='POST':
+            dept_id=request.POST.get('deptid')
+            dept_name=request.POST.get('deptname')
+            Department.objects.filter(deptid=dept_id).update(deptname=dept_name)
+            messages.success(request, 'Department updated successfully!')
+            return redirect('viewdept')
         return render(request,'viewdept.html',{'depts':depts})
     except KeyError:
         messages.error(request,'Please Login First')
