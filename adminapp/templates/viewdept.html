@@ -93,6 +93,29 @@
         padding: 40px 20px;
         color: #64748b;
     }
+
+    .btn-action-edit {
+        background: linear-gradient(135deg, #d5f02b 0%, #7edc26 100%);
+        color: #ffffff !important;
+        border: none;
+        border-radius: 20px;
+        padding: 6px 14px;
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-action-edit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(72, 247, 142, 0.45);
+        color: #ffffff;
+    }
 </style>
 
 <div class="container-fluid px-0">
@@ -123,6 +146,7 @@
                         <th>Dept ID</th>
                         <th>Department Name</th>
                         <th>Assigned Staff</th>
+                        <th class="text-center" style="width: 120px;">Edit</th>
                         <th class="text-center" style="width: 120px;">Action</th>
                     </tr>
                 </thead>
@@ -150,7 +174,17 @@
                             </span>
                         </td>
                         <td class="text-center">
-                            <form method="POST" action="{% url 'deletedept' dept_id=dept.deptid %}" onsubmit="return confirm('Are you sure you want to delete department {{ dept.deptname }}? All associated employee records may be removed.');" style="display: inline;">
+                            <form method="POST" action="#" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-action-edit">
+                                    <i class="ti ti-trash"></i> Edit
+                                </button>
+                            </form>
+                        </td>
+                        <td class="text-center">
+                            <form method="POST" action="{% url 'deletedept' dept_id=dept.deptid %}"
+                                onsubmit="return confirm('Are you sure you want to delete department {{ dept.deptname }}? All associated employee records may be removed.');"
+                                style="display: inline;">
                                 {% csrf_token %}
                                 <button type="submit" class="btn-action-delete">
                                     <i class="ti ti-trash"></i> Delete
@@ -162,7 +196,8 @@
                     <tr>
                         <td colspan="5">
                             <div class="empty-state">
-                                <i class="ti ti-folder-off" style="font-size: 40px; color: #cbd5e1; display: block; margin-bottom: 10px;"></i>
+                                <i class="ti ti-folder-off"
+                                    style="font-size: 40px; color: #cbd5e1; display: block; margin-bottom: 10px;"></i>
                                 <h6 class="fw-bold text-dark">No Departments Created</h6>
                                 <p class="text-muted mb-3">Get started by creating your first organizational unit.</p>
                                 <a href="{% url 'adddept' %}" class="btn btn-sm btn-success rounded-pill px-3">
