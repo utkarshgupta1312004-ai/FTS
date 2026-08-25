@@ -2,6 +2,7 @@ from userapp.models import Files, FileMovement
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views.decorators.cache import cache_control
+from django.db import transaction
 from django.db.models import Count, Q
 from adminapp.models import Department, Employee
 from mainapp.models import LoginInfo
@@ -171,7 +172,6 @@ def ViewEmp(request):
             empdept_val = request.POST.get('empdept')
             empdiscription = request.POST.get('empdiscription')
 
-            
             if Employee.objects.exclude(empemail=old_empemail).filter(Q(empid=empid) | Q(empemail=empemail)).exists():
                 messages.error(request, 'User already exists')
                 return redirect('viewemp')
@@ -180,14 +180,29 @@ def ViewEmp(request):
                     dept = Department.objects.get(deptid=empdept_val) if str(empdept_val).isdigit() else Department.objects.get(deptname=empdept_val)
                     
                     if old_empemail != empemail:
-                        LoginInfo.objects.filter(email=old_empemail).update(email=empemail)
-                        Employee.objects.filter(empemail=old_empemail).update(
-                            empid=empid,
-                            empname=empname,
-                            empemail=empemail,
-                            empdept=dept,
-                            empdiscription=empdiscription
-                        )
+                       
+                            old_emp = Employee.objects.get(empemail=old_empemail)
+                            
+                            # 1. Create new employee record with updated email & fields
+                            new_emp = Employee.objects.create(
+                                empid=empid,
+                                empname=empname,
+                                empemail=empemail,
+                                empdept=dept,
+                                empdiscription=empdiscription,
+                                joindate=old_emp.joindate,
+                                pictures=old_emp.pictures
+                            )
+
+                            # 2. Reassign foreign key references to the new employee record
+                            LoginInfo.objects.filter(email=old_empemail).update(email=empemail)
+                            Files.objects.filter(initiated_by=old_emp).update(initiated_by=new_emp)
+                            Files.objects.filter(current_holder=old_emp).update(current_holder=new_emp)
+                            FileMovement.objects.filter(from_employee=old_emp).update(from_employee=new_emp)
+                            FileMovement.objects.filter(to_employee=old_emp).update(to_employee=new_emp)
+
+                            # 3. Safely remove the old employee record
+                            old_emp.delete()
                     else:
                         emp = Employee.objects.get(empemail=old_empemail)
                         emp.empid = empid
