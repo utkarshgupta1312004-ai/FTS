@@ -273,7 +273,9 @@
                                 <select name="action" id="action_select" class="form-select" onchange="toggleActionFields()" required>
                                     <option value="FORWARD" selected>Forward File</option>
                                     <option value="RETURN">Return File to Sender</option>
+                                    {% if file.initiated_by.empemail == empemail %}
                                     <option value="CLOSE">Close / Complete File</option>
+                                    {% endif %}
                                 </select>
                             </div>
 

@@ -280,6 +280,9 @@ def FileDetails(request, fid):
             return redirect("recievedfiles")
 
         elif action == "CLOSE":
+            if file.initiated_by.empemail != empemail:
+                messages.error(request, "Only the employee who initiated the file can close it.")
+                return redirect("filedetails", fid=fid)
             FileMovement.objects.create(
                 file=file,
                 from_employee=emp,

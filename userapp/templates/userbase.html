@@ -97,14 +97,9 @@
             </a>
             <ul class="pc-submenu">
               <li class="pc-item"><a class="pc-link text-white" href="{% url 'initiatefile' %}">Initiate Files</a></li>
-            </ul>
-            <ul class="pc-submenu">
               <li class="pc-item"><a class="pc-link text-white" href="{% url 'viewfiles' %}">View Files</a></li>
-            </ul>
-             <ul class="pc-submenu">
               <li class="pc-item"><a class="pc-link text-white" href="{% url 'recievedfiles' %}">Received Files</a></li>
-            </ul>
-          </li>
+          </ul>
 
           <li class="text-white pc-item pc-caption">
             <label>Actions</label>
@@ -171,25 +166,15 @@
         <ul class="list-unstyled">
           
           <li class="dropdown pc-h-item header-user-profile">
-            <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button"
+            <a class="pc-head-link dropdown-toggle arrow-none me-0 bg-white rounded" data-bs-toggle="dropdown" href="#" role="button"
               aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
-              {% if logged_user and logged_user.pictures %}
-                <img src="{{ logged_user.pictures.url }}" alt="user-image" class="user-avtar">
-              {% else %}
-                <img src="{% static 'admin/assets/images/user/avatar-2.jpg' %}" alt="user-image" class="user-avtar">
-              {% endif %}
+              
               <span>{{ logged_user.empname|default:request.session.empname|default:"Employee" }}</span>
             </a>
             <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
               <div class="dropdown-header">
                 <div class="d-flex mb-1">
-                  <div class="flex-shrink-0">
-                    {% if logged_user and logged_user.pictures %}
-                      <img src="{{ logged_user.pictures.url }}" alt="user-image" class="user-avtar wid-35">
-                    {% else %}
-                      <img src="{% static 'admin/assets/images/user/avatar-2.jpg' %}" alt="user-image" class="user-avtar wid-35">
-                    {% endif %}
-                  </div>
+                  
                   <div class="flex-grow-1 ms-3">
                     <h6 class="mb-1">{{ logged_user.empname|default:request.session.empname|default:"Employee" }}</h6>
                     <span>{{ request.session.empemail }}</span>
