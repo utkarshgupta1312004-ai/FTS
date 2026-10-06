@@ -9,24 +9,23 @@ venv/
 env/
 .venv/
 
-# Django
-db.sqlite3
+# Environment variables & Backups
+.env
+*.bak
 *.log
 
-# Environment variables
-.env
-
-# Media / uploaded files
-media/
-
-# Static files
+# Static files (generated during build)
 staticfiles/
 staticfiles_build/
 
-# IDE
+# Media uploads (ignore user uploaded files, keep default assets and directories)
+media/file/*
+!media/file/.gitkeep
+media/profileimg/*
+!media/profileimg/.gitkeep
+
+# IDE & OS
 .vscode/
 .idea/
-
-# OS
 Thumbs.db
 .DS_Store

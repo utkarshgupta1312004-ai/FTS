@@ -262,18 +262,14 @@
                                 <i class="ti ti-user"></i>
                                 {{ f.initiated_by.empname }}
                             </span>
-                            <small class="d-block text-muted mt-1 ps-1">
-                                {{ f.initiated_by.empdept.deptname }}
-                            </small>
+                            
                         </td>
                         <td>
                             <span class="emp-badge" style="background: #e0f2fe; color: #0284c7; border-color: #bae6fd;">
                                 <i class="ti ti-user-check"></i>
                                 {{ f.current_holder.empname }}
                             </span>
-                            <small class="d-block text-muted mt-1 ps-1">
-                                {{ f.current_holder.empdept.deptname }}
-                            </small>
+                            
                         </td>
                         <td>
                             {% if f.status == 'OPEN' %}

@@ -16,7 +16,8 @@ Including another URLconf
 """
 from os import name
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
+from django.views.static import serve
 from django.conf import settings
 from django.conf.urls.static import static
 from mainapp import views
@@ -48,7 +49,5 @@ urlpatterns = [
     path('receivedfiles/', RecivedFiles, name='recievedfiles'),
     path('changeuserpwd/', ChangeUserPwd, name='changeuserpwd'),
     path('filedetails/<fid>/', FileDetails, name='filedetails'),
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
